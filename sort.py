@@ -120,23 +120,110 @@ def merge_sort(inOutList, start, end):
     merge(inOutList, start, mid, end)                          
         
         
+def bottomup_merge_sort(inOutList):      
+    l = len(inOutList)
+    stride = 2
+    while (stride/2 <= l):
+        for x in range(0, l, stride):
+            start = x
+            mid = min(start + stride/2, l)
+            end = min(mid + stride/2, l)
+#             print "Calling with (%d,%d,%d)" % (start, mid, end),
+            merge(inOutList, start, mid, end)
+#             print "\t\t%s" % str(inOutList)
+        stride *= 2
+    
         
+#-------------------------
+# MERGE SORT
+#-------------------------
+def partition(inOutList, start, end):
+    
+    if (end - start == 1):
+        return start
+    
+    r = 0 #util.get_random_number(start, end)
+    print "r=%d" % r
+    inOutList[start], inOutList[r] = inOutList[r], inOutList[start]
+    print inOutList[start:end]
+    
+    pivot = inOutList[start]
+    i = start+1
+    j = end - 1
+    
+    while (True):
+        # Stop at first item > pivot
+        while(inOutList[i] < pivot and i < end):
+            i += 1
+    
+        # Stop at first item < pivot
+        while(inOutList[j] > pivot and j > start):
+            j -= 1
+                    
+        if (i < j):
+            inOutList[i], inOutList[j] = inOutList[j], inOutList[i]
+            i += 1
+            j -= 1
+        else:
+            break
+        
+    inOutList[start], inOutList[j] = inOutList[j], inOutList[start]
+    return j
+        
+def quick_sort(inOutList, start, end):
+    if (end <= start):
+        return
+    p = partition(inOutList, start, end)
+    quick_sort(inOutList, start, p-1)
+    quick_sort(inOutList, p+1, end)    
+    
         
 def main():
     
+    inOutList = [7, 3, 5, 1]
+    quick_sort(inOutList, 0, len(inOutList))
+    print "Output: " + str(inOutList)
+    return
+
+#     print "Input : " + str(inOutList)
+#     bottomup_merge_sort(inOutList)
+#     print "Output: " + str(inOutList)
+#     return
+
     #----------------------
     # Merge Sort
     #----------------------
+    print "MERGE SORT:"
     inOutList = [1,3,5,7,2,4,6,8]
     print "Input : " + str(inOutList)
-    merge_sort(inOutList,0, len(inOutList))
+    merge_sort(inOutList, 0, len(inOutList))
     print "Output: " + str(inOutList)
-    
-    inOutList = util.generate_rand_list(15, allowDuplicates=False)
+    print "IS_SORTED: %r" % util.is_sorted(inOutList)
+     
+    inOutList = util.generate_rand_list(15, allowDuplicates=True)
     print "Input : " + str(inOutList)
-    merge_sort(inOutList,0, len(inOutList))
+    merge_sort(inOutList, 0, len(inOutList))
     print "Output: " + str(inOutList)
-        
+    print "IS_SORTED: %r" % util.is_sorted(inOutList)
+    
+    print "\nBOTTOMUP MERGE SORT:"
+    inOutList = [1,3,5,7,2,4,6,8]
+    print "Input : " + str(inOutList)
+    bottomup_merge_sort(inOutList)
+    print "Output: " + str(inOutList)
+    print "IS_SORTED: %r" % util.is_sorted(inOutList)
+     
+    inOutList = util.generate_rand_list(15, allowDuplicates=True)
+    print "Input : " + str(inOutList)
+    bottomup_merge_sort(inOutList)
+    print "Output: " + str(inOutList)
+    print "IS_SORTED: %r" % util.is_sorted(inOutList)
+            
+    inOutList = util.generate_rand_list(16, allowDuplicates=False)
+    print "Input : " + str(inOutList)
+    bottomup_merge_sort(inOutList)
+    print "Output: " + str(inOutList)   
+    print "IS_SORTED: %r" % util.is_sorted(inOutList)         
     return
         
     #----------------------
@@ -147,6 +234,7 @@ def main():
     print "Input : " + str(inOutList)
     ns = selection_sort(inOutList)
     print "Output: %s --> %d" % (str(inOutList), ns) 
+    print "IS_SORTED: " % util.is_sorted(inOutList)
     
     inOutList = util.generate_rand_list(10)
     print "Input : " + str(inOutList)
