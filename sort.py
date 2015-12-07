@@ -142,22 +142,21 @@ def partition(inOutList, start, end):
     if (end - start == 1):
         return start
     
-    r = 0 #util.get_random_number(start, end)
-    print "r=%d" % r
+    r = util.get_random_number(start, end)
     inOutList[start], inOutList[r] = inOutList[r], inOutList[start]
-    print inOutList[start:end]
+#     print inOutList[start:end]
     
     pivot = inOutList[start]
-    i = start+1
+    i = start + 1
     j = end - 1
     
     while (True):
         # Stop at first item > pivot
-        while(inOutList[i] < pivot and i < end):
+        while(i < end and inOutList[i] < pivot):
             i += 1
     
         # Stop at first item < pivot
-        while(inOutList[j] > pivot and j > start):
+        while( j > start and inOutList[j] > pivot):
             j -= 1
                     
         if (i < j):
@@ -168,27 +167,41 @@ def partition(inOutList, start, end):
             break
         
     inOutList[start], inOutList[j] = inOutList[j], inOutList[start]
+#     print "Pivot=%d, %s" % (r, str(inOutList[start:end]))
     return j
         
 def quick_sort(inOutList, start, end):
     if (end <= start):
         return
     p = partition(inOutList, start, end)
-    quick_sort(inOutList, start, p-1)
+    quick_sort(inOutList, start, p)
     quick_sort(inOutList, p+1, end)    
     
         
 def main():
     
-    inOutList = [7, 3, 5, 1]
+    #----------------------
+    # Quick Sort
+    #----------------------
+    print "QUICK SORT:"
+    inOutList = [1,3,5,7,2,4,6,8]
+    print "Input : " + str(inOutList)
     quick_sort(inOutList, 0, len(inOutList))
     print "Output: " + str(inOutList)
+    print "IS_SORTED: %r" % util.is_sorted(inOutList)
+     
+    inOutList = util.generate_rand_list(15, allowDuplicates=False)
+    print "Input : " + str(inOutList)
+    quick_sort(inOutList, 0, len(inOutList))
+    print "Output: " + str(inOutList)
+    print "IS_SORTED: %r" % util.is_sorted(inOutList)
+          
+    inOutList = util.generate_rand_list(15, allowDuplicates=True)
+    print "Input : " + str(inOutList)
+    quick_sort(inOutList, 0, len(inOutList))
+    print "Output: " + str(inOutList)
+    print "IS_SORTED: %r" % util.is_sorted(inOutList)
     return
-
-#     print "Input : " + str(inOutList)
-#     bottomup_merge_sort(inOutList)
-#     print "Output: " + str(inOutList)
-#     return
 
     #----------------------
     # Merge Sort
