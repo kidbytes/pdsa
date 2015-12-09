@@ -21,6 +21,12 @@ def generate_rand_list(numItems=10, start=0, allowDuplicates=True):
     return out
 
 def get_random_number(start, end):
+    if (end < start):
+        raise Exception("end=%d < start=%d" % (end, start))
+    
+    if (end - start == 1):
+        return start
+    
     return random.randint(start, end-1)
     
 def is_sorted(inList):

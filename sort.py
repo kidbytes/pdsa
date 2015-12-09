@@ -135,14 +135,14 @@ def bottomup_merge_sort(inOutList):
     
         
 #-------------------------
-# MERGE SORT
+# QUICK SORT
 #-------------------------
 def partition(inOutList, start, end):
     
     if (end - start == 1):
         return start
     
-    r = util.get_random_number(start, end)
+    r = start #util.get_random_number(start, end)
     inOutList[start], inOutList[r] = inOutList[r], inOutList[start]
 #     print inOutList[start:end]
     
@@ -177,9 +177,54 @@ def quick_sort(inOutList, start, end):
     quick_sort(inOutList, start, p)
     quick_sort(inOutList, p+1, end)    
     
+# Uses partition instead of sorting    
+def nth_largest(inOutList, n):   
+    if (n > len(inOutList)):
+        raise Exception("n larger than size of list")     
+    
+    if (n < 0):
+        raise Exception("n cannot be smaller than 0")
+    
+    start = 0
+    end = len(inOutList)
+    while (True):
+        p = partition(inOutList, start, end)
+        if (n == p):
+            return inOutList[p]
+        elif (n < p):
+            end = p
+        else:
+            start = p + 1
+            n -= p 
+            
         
 def main():
-    
+    #----------------------
+    # Nth Largest
+    #----------------------
+    print "Nth Largest:"
+    inOutList = [1,2,3,4,5,6,7,8]
+    print inOutList
+    for x in range(0, len(inOutList)):
+        print "%d Largest:\t%d" % (x, nth_largest(inOutList, x))        
+       
+#     inOutList = [8,7,6,5,4,3,2,1]
+#     print inOutList
+#     for x in range(0, len(inOutList)):
+#         print "%d Largest:\t%d" % (x, nth_largest(inOutList, x))    
+#          
+#     inOutList = util.generate_rand_list(15, allowDuplicates=False)
+#     print inOutList
+#     for x in range(0, len(inOutList)):
+#         print "%d Largest:\t%d" % (x, nth_largest(inOutList, x))
+#      
+#     inOutList = util.generate_rand_list(15, allowDuplicates=True)
+#     print inOutList
+#     for x in range(0, len(inOutList)):
+#         print "%d Largest:\t%d" % (x, nth_largest(inOutList, x))  
+         
+    return
+                      
     #----------------------
     # Quick Sort
     #----------------------
