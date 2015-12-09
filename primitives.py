@@ -1,5 +1,5 @@
 import random
-from list import Node, SList, DList
+import list
 
 # Maximize x[j]- x[i] subject to i<j
 def max_difference_bruteforce(x):
@@ -45,8 +45,8 @@ def main():
 #     print y 
 #     y = max_difference_better(x)
 #     print y
-    ls = DList()
-    for i in range(6):
+    ls = list.DList()
+    for _ in range(6):
         ls.append(random.randrange(1,15))
         
     print ls
