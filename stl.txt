@@ -1,0 +1,33 @@
+What is not part of STL?
+* Container adapters (stack, queue, priority_queue) and containers bitset and 
+valarray are not part of STL because they lack iterator support.
+
+* Arrays are part of C++ language and not the library.
+
+* Extensions of the standard C++ library like - hash containers, singly linked
+lists and ropes.
+
+
+Terms
+* Std sequence containers: vector, string, deque, list
+  Std associative containers: set, multiset, map, multimap
+  
+* Input Iterators:  read-only. Each location may be read only once
+  Output Iterators: write-only. Each location may be written only once
+  - Modelled on reading and writing streams. istream_iterators and
+    ostream_iterators are common manifestations
+    
+  Forward Iterators: have the capabilities of both input and output iterators.
+                     Plus they can read/write a single location repeatedly.
+                     They can only move forward.
+  
+  Bidirectional:     Forward Iterators + move backward.                    
+                     Assoc containers and lists have these iterartors.
+                     
+  Random Access Iterators: Random Iterators + Iterator arithmetic          
+                           vector, string and deque provide these iterators.          
+                           Pointers intro arrays act as random iterators
+                           
+* Any class that overloads operator() is a functor class. Objects of these
+classes are known as function objects. Any place where a real function works,
+a function object also works.                           
