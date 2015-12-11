@@ -29,5 +29,150 @@ Terms
                            Pointers intro arrays act as random iterators
                            
 * Any class that overloads operator() is a functor class. Objects of these
-classes are known as function objects. Any place where a real function works,
+classes are known as
+ function objects. Any place where a real function works,
 a function object also works.                           
+
+Complexity
+* STL gives complexity guarantees regardless of the STL platform used.
+* Constant time - Performance is unaffected by changes in n.
+                  Example, inserting into a linked list.
+  Amortized constant time - Usually constant but some time take n.
+  Logarithmic - An operation on million items would take only about
+                3 times as much as 100 items. 
+  Linear - Operation time increases proportional to n.
+  
+* Linear < Logarithmic < Constant
+
+
+CONTAINERS:
+* Contiguos memory containers aka array-based containers:
+Element insertion or deletion requires shifting the remaining elements.
+
+* Only a vector can be passed to a C interface.
+
+* Standard vector, string and deque and non-standard rope are contiguos.
+
+* Node base containers store only a single element per chunk of memory.
+Insertion or deletion is easy. list, slist and all assoc containers are node
+based. 
+
+* There is no notion of position in assoc containers. If order is important
+you can't use them
+
+* If you are looking for random access iterators, you can only use vector,
+string and deque.
+
+* If the data in the container needs to be layout compatible with C, you
+should use vector.
+
+* If look up speed is important, you can use in order - hashed container,
+sorted vector and std assoc containers.
+
+* If you don't want containers that use reference counting, stay away from
+strings. You use vector<char>.
+
+* If you want transactional semantics - ability to rollback insertions and
+deletions, use node based containers. List is the only node based container
+that supports transaction for a range of elements. You need these sematics to
+write exception safe code.
+
+* Insertions and deletions don't invalidate any iterators, pointers, references
+in node based containers (unless they point to the item being deleted). Whereas, 
+contiguous containers invalidate all pointers and references.
+
+* Deque is the only container that has random access iterators and whose 
+pointers and references are not invalidated when insertions take place at
+the end and nothing gets deleted. Note, iterators may be invalidated if
+insertions take place. Plus this is the only container where pointers and
+references may not be invalidate but only iterators get invalidated.
+
+* Writing container independent code is a very bad idea - even if you are 
+writing for only sequence based containers. For example, invalidation rules
+are different for each container. Each container has its own capabilities 
+and they are not interchangeable.
+
+* Use typedef's for convenience:
+  typedef vector<string> svec;
+  typedef vector<string>::const_iterator siter;
+  
+ITEM 3:
+* Make copying cheap. STL uses copyIn-copyOut mechanism. When you store, a copy
+is stored and when you retrieve a copy is retrieved. When objects are moved due
+to inserts and deletes, copies are made. Copying is made by using copy ctr() and
+copy assignment operators. Inserting a derived class object into a base class
+vector is an error. It leads to slicing. You are better off storing shared
+pointers. When you reserve in a vector, you are not creating any objects. You
+are just reserving space.
+
+
+  
+ITEM 4:
+* Use empty() instead of size() when checking for empty container. empty() is 
+guaranteed to be constant time operation for all standard containers. While
+size() is linear for some. For example it is linear for lists. Lists support
+splicing operation. Splicing is a constant time. If this method were to update
+size information to make size() constant time, then splice wouldn't be constant
+time. I.e. a container may have some special methods that are constant time and 
+taking care of size in these methods may not be possible to maintain complexity.
+
+ITEM 5:
+* Use range member functions if available instead of generic algorithms. Example
+you can use vector.assign() or insert() instead of generic copy. Copy() has a 
+loop in it and performs by copying items. Member functions mostly are optimized.
+* Range Construction: container::container(InputIterator begin, end)
+* Range Insertion:    container::insert(position, InputIterator begin, end)
+                      - Assoc containers don't have position
+* Range Erasure:      iterator container::erase(iterator being, iterator end)
+                      void container::erase(...) for assoc containers
+                      - Apparently there is a performance penalty if iter has to
+                        be returned for assoc containers.
+ * Range Assignment   void container::assign(InputIterator begin, end) 
+ 
+ ITEM 7:
+ * Clean up new'd pointers in a container before the container is destroyed.
+ When a container goes out of scope, it calls destructor for each of its 
+ items. Destructor for a pointer is no op. You should use smart pointers
+ instead.
+ 
+ ITEM 9:
+ Erasing options:
+ * Sequence: c.erase(remove(c.begin(), c.end(), data), c.end())
+ * List    : c.remove(data)
+ * Assoc   : c.erase(data) [Uses equivalence instead of equality]
+ You can also use remove_if(c.begin(),c.end(),badValue_predicate)
+ 
+ ITEM 12:
+ Thread safety
+ 1. Multiple threads may read from a container safely. There should not be
+ any writes at that time.
+ 2. Multiple threads may simultaneously write to different containers.
+ 
+ ITEM 13:
+ * Prefer vector and string to dynamically allocated arrays. When T is a 
+ character use a string. Both are fully fledged sequence containers and
+ you can use all the stl algorithms on them.
+ * If you are using reference counted strings in a multi-threaded environment
+ there may be a performance hit because updates to the count are protected.
+ You can use vector<char> instead.
+ 
+ ITEM 14:
+ Use reserve to avoid unnecessary reallocations. During a realloc, memory is 
+ doubled, items copied from old memory, old items deleted and old memory 
+ deallocated. This is expensive. Reserve operation mimizes reallocations.
+ * size()     -> Returns how many elements are in the container
+ * capacity() -> How many elements the container can hold. 
+                 capacity() - size() is how many empty slots available
+ * resize(n)  -> After resize, size() will return n. If n is smaller than
+                 the current size, container shrinks. If n is lager, new
+                 default constructed elements will be added to the end of
+                 the container. If n is larger than current capacity, 
+                 reallocation will take place before the elements are added.    
+ * reserve(n) -> Changes capacity to at least n. If n less than current then
+                 it is ignored.
+ 
+ 
+
+ 
+  
+  
