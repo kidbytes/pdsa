@@ -415,6 +415,139 @@ This reads individual characters directly from the buffer. Every char is grabbed
 including white space.
 
 ALGORITHMS:
+ITEM 30:
+Make sure destination ranges are big enough. Most alrogithms write to
+destination ranges by assignments.
+
+	int foo(int x)
+	vector<int> results;
+	transform(v.begin(), v.end(), results.end(), foo);
+Here, items are assigned in results and not inserted. If results doesn't have
+have enough capacity, then it is a disaster.
+
+We have to instead use 
+	transform(v.begin(), v.end(), back_inserter(results), foo);
+Here, the iterator returned by back_inserter calls a push_back() when
+assignment operator is called. You can also use front_inserter().
+You can use inserter() to insert at arbitrary locations.
+inserter(results, results.begin() + results.size() / 2) -> insert in middle.
+
+ITEM 31:
+Sorting Options:
+* If you are only looking for the top K items out of N items then you don't 
+need to sort the complete container. Iters after K need not be sorted.
+Use partial sort in this case.
+	partial_sort(v.begin(), v.begin() + 20, v.end(), myCmp)
+After this call the first 20 items are sorted in v.
+
+* If you don't care about the order of first 20 elements, you use nth_element.
+	nth_element(v.begin(), v.begin() + 20, v.end(), myCmp). Here the top 20 elems
+are not sorted. It could be using partition and solve for 20th posisition.
+Once the parition returns, all elements to the left of 20 are less than 20th
+element.
+
+* If there is tie between items, any item could be returned. We don't have
+control. partial_sort and nth_element are not stable sorts. You have control
+only for complete sorts. If you want stability you use stable_sort.
+
+* nth_element() can be used to find the median value or find the value at a 
+particular percentile. Replace the 2nd arg with the position you are looking
+for. After the call, position points to the correct value.
+
+* Suppose you want all the elements that meet a certain criteria to be at
+the start of a container. We do not know how many. partial_sort and 
+nth_element don't work.
+	bool pred(const item&)
+	vector<item>::iterator goodEnd = partition(v.begin(), v.end(), pred);
+After this call, [v.begin(), goodEnd) has the list you are looking for.
+If you want stability, you use stable_partition.
+
+* sort, stable_sort, partial_sort, and nth_element need random access
+iterators. So, they can only be applied to vectors, strings, deques and
+arrays. Assoc container are already sorted and remain sorted at all times
+using their comparison functions. Lists has its own sort() method. This
+sort is stable.
+
+* partition and stable_partition require only bidirectional iterators. So,
+they can be used on any container.
+
+* You can also use non-standard priority_queues for sorting. Non-standard
+because it doesn't supporte iterators.
+
+ITEM 32:
+Remove
+* ForwardIterator remove(ForwardIterator first, 
+                       ForwardIterator last, 
+                       const T& value)
+remove doesn't receive the container, only iterators. And there is no way
+go get container from iterator. Because there is no container, remove cannot
+delete elements from it. We do not know which member function to invoke. If you
+print the size after remove, the size doen't change. Removes basically moves all
+unremoved elements to the top of the container. It returns an iterator that points
+to one past the last unremoved element. We can't make any assumptions of the values
+beyond new end(). They need not be removed elements. Remove operates by compacting.
+
+* If you really want to remove elements and shrink number of items you should
+also use erase.
+	v.erase(remove(...), v.end())
+list.remove() is a combination of erase and remove. For assoc container the method
+is called erase(). 
+
+* remove, remove_if and unique() have similar behaviour and correspond to similar
+methods in list and assoc containers. unique() removes similar adjacent element.
+
+* The remove-erase idiom doesnt work for pointers. It will lead to resource leaks
+due to compaction.
+
+ITEM 34:
+Algorithms that work on sorted ranges
+* binary_search, upper_bound, lower_bound, equal_range(), ...
+set_union, set_intersection, set_symmetric_difference
+
+ITEM 36
+copy
+* There are several versions of copy but no copy_if
+
+ITEM 37:
+Summarizing ranges  using accumulate or for_each
+* count, count_if, min_element, max_element
+
+* 	list<double>ld
+	double sum = accumulate(ld.begin(), ld.end(), 0.0)
+0.0 is the initial sum. Note, this has to be a double.
+Then accumulate would use a double variable in its processing.
+Accumulate only uses input iterators. So, it can be used for
+istream_iterator and istreambuf iterators.
+
+
+FUNCTORS:
+* Neither C nor C++ allows you to truly pass functions as parameters to other
+functions. Instead, you must pass poiters to functions. Function pointers 
+are also passed by value. STL function objects are modelled after function
+pointers, so they too are passed by value. The onus is on you to make sure
+they behave well after copying. That means 1. They have to be small and
+2. They must not be polymorphic - no virtual functions
+
+* Function objects can have as much state as they want. Efficiency is 
+important and we need to take care of slicing problem.
+
+* There is a way to let function objects be hefty and polymorphic. Move the
+data and polymorphism to a different class and have a member variable that
+points to an object of this. You can use a shared pointer.
+
+ITEM 39:
+Make predicates pure functions
+* Pure functions return value depends only on its input parameter. Kind of
+stateless. A predicate is a function that returns bool or something that 
+can be converted to a bool. They are used in assoc containers as comparison
+functions, find_if, and various sorting algorithms.
+
+* A predicate class is a functor class whose operator() function is a predicate.        
+
+
+
+
+
 
   
 
