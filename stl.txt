@@ -286,8 +286,67 @@ and deletes. BST's have more storage overhead due to pointers.
 Arrays are contiguous and require less pages. There is locality. There can be 
 more page faults with BST because the data is spread out among several pages.
 
+vector<T> v;
+sort(v.begin(), v.end());
+if (binary_search(v.egin(), v.end(), w) {}
+vector<>::iterator i = lower_bound(v.begin(), v.end(), w);
+if (i != v.end) && !(v < *i)
 
+pair<vector<T>::iterator, vector<T>::iterator> range = equal_range(v.gegin(), v.end(), w);
+if (range.first != range.second) ..
+sort(v.begin(), v.end());
                                        
+* To emulate a map, type of the  data stored in the vector will be pair<K,V>.
+Both the components of the pair must be assignable. You need to write a custom 
+comparison functions for sorting and lookups because you only need to compare 
+the firt item K in a pair. The default pair's operator <  looks at both K & V. 
+Actually you will need 2 versions. Input for lookup requires only K where as 
+for comparison the required input is 2 pair objects. Putting this together:
+
+typedef pair<string, int> Data;
+class DataCompare {
+public:
+  bool operator() (const Data& lhs, const Data& rhs) const {
+    return keyLess(lhs.first, rhs.first);
+  }
+  
+  bool operator() (const Data& lhs, const Data::first_type& k) const {
+    return keyLess(lhs.first, k);
+  }
+  
+  bool operator() (const Data::first_type& k, const Data& rhs) const {
+    return keyLess(k, rhs.first);
+  }
+  
+private:
+  bool keyLess(const Data::first_type& k1, const Data::first_type& k2) const {
+    return k1 < k2;
+  }
+};
+    
+ITEM 24:
+map::operator[] and map::insert() differ in performance
+* Operator [] has add or update functionality. 
+
+Add:
+map<int, T> m;
+m[1] = 1.50;
+Operator [] returns a reference to the value.
+If key is not present, it creates a new one by using the value type's default
+constructor. Penalty comes from default constructing the object.
+You may use m.insert(T::value_type(1, 1.50));
+
+Update:
+m[1] = 1.50
+In this case operator[] is more efficient.
+
+* Non standard associative containers: hash_set, hash_multiset, hash_map, hash_multimap
+
+
+ITERATORS:
+4 Types: iterator (T*), const_iterator(const T*), reverse_iterator(T*) and 
+const reverse_iterator(const T*)
+ITEM 26
 
  
   
