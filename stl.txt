@@ -173,6 +173,122 @@ loop in it and performs by copying items. Member functions mostly are optimized.
  
  
 
+ ITEM 16:
+ Passing vector and string to legacy C API
+ * &V[0] yields pointer to the first element since vector is constrained to
+ be contiguous in memory just like arrays. You must check V is not empty(). 
+ &*V.begin() also yields the same.
+ 
+ * Data for strings is not guaranteed to be contiguous in memory and internal
+ representation is not guaranteed to end in a null character. You should use
+ S.c_str(). This method may return pointer to a copy of the data that is 
+ contiguous but we do not know how the compiler implements it.
+ 
+ ITEM 17:
+ Use the swap trick to trim excess capacity.
+ * When you erase items from a vector, the capacity doesn't shrink i.e. the
+ memory footprint doesn't reduce. You can use the swap trick:
+   vector<Contestants>(contestV).swap(contestV)
+A temp is created with a copy of contestV and then temp and contestV are swapped.
+When temp is created, it is created with the correct capacity. After the swap,
+contestV looses unused capacity but temp has bloated capacity. But it is a temp
+
+* Same trick works for strings.
+
+* vector<T>().swap(inV)  --> clear a vector and shrink its capacity to minimum
+
+ITEM 18:
+Avoid using vector<bool>
+* This is a pseduo container that doesn't actually contain bools but a packed
+representation of bools. Each bool occupies a single bool.
+
+* &v[0] doesn't return a pointer to the first bool. This is a basic requirement
+of a vector.
+
+* operator[] doesn't return a bool because the vector doesn't actually store
+bools. It returns a proxy object called reference which is an inner class in
+specialized version of vector<bool>. That is why bool* pb = &v[0] doesn't 
+compile.
+
+* You can use deque<bool>. However, deques don't have contiguous memory layout.
+They don't have reserve() and capacity().
+
+* You can bitset. This is not an stl container, so no iterators. Plus the size
+is fixed at compile time meaning no inserts and deletes at run time.
+
+ASSOCIATIVE CONTAINERS:
+* Automatically keep their items sorted. Use equivalence for comparison instead
+of equality. Maps don't do much with value part. They just store and retrieve.
+Keys are important.
+
+* The generic stl find algorithm and set::insert need to determine if two
+values are the same. Find uses equality which is based on operator== and 
+insert uses equivalences which is based on operator <. It is possible they
+return different values.
+
+* x == y is simple. It is true if values are equal. Note the implementation
+may ignore certain book keeping fields for this comparison i.e objects need
+not be equal at bit level.
+
+* The definition of same in assoc containers is equivalence. Equivalence is 
+based on sort order defined for the container. Two values are equivalent if 
+neither precedes the other in sort order. The default sortorder for a set 
+is less<T> which by default calls operator <. 
+
+* Actually, every assoc container takes in a predicate as sorting criteria,
+The method key_comp() returns the predicate and it is used for comparison.
+So by default, key_comp() returns less<T> which calls operator <.
+
+* If you define a case insensitive sorting criteria for a set, and insert
+apple and Apple in order, Apple will not be inserted. set.find('aPpLe') would 
+return an iterator the element. But, algorithm find() will not because it uses
+operator== which is case sensitive unless it is overridden.
+
+* Assoc containers use the same equivalence for both inserting and finding.
+
+ITEM 20:
+Implement sort order function for pointers.
+* If you are storing pointers in your container, provide a custom sort oder
+function when initializing the container.
+
+struct Cust : public binary_function<const string*, const string*, bool> {
+  bool operator(const string* ps1, const string* ps2) {
+    return *ps1 < *ps2;
+  }
+}
+set<string*, Cust> mySet;
+
+
+ITEM 21:
+Always have comparison function return false for equal values.
+set<int, less_equal<int> > s;
+Here the comparison function is less_equal which calls operator <= by
+default. When iserting 2 equal integers, set uses the less_equal to determine
+if those 2 are equal: !(i<=j) && !(j<=i). This actually evaluates to false. 
+That means the set tries to insert 2 equal integers and the behavior is
+undefined. The comparison function should define a strict weak ordering.
+
+* Elements in an object of map<K,V> are of type pair<const K, V>. You cant
+change the keys.
+
+ITEM 23:
+Replace associative containers with sorted vectors.
+* If lookup speed is important, you may use non-standard hash containers. 
+They offer constant time lookups compared to logarithmic time lookup of 
+assoc containers which are implemented using balanced binary search trees.
+
+* Balanced binary trees are dynamic and they are fine tuned for mixed inserts,
+deletes and lookups. The order of operations is not known in advance. In many
+cases we setup the data in advance and we do lookups. 
+
+* A sorted vector gives better performance if lookups are not mixed with inserts
+and deletes. BST's have more storage overhead due to pointers.
+Arrays are contiguous and require less pages. There is locality. There can be 
+more page faults with BST because the data is spread out among several pages.
+
+
+                                       
+
  
   
   
