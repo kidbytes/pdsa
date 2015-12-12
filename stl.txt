@@ -281,8 +281,8 @@ assoc containers which are implemented using balanced binary search trees.
 deletes and lookups. The order of operations is not known in advance. In many
 cases we setup the data in advance and we do lookups. 
 
-* A sorted vector gives better performance if lookups are not mixed with inserts
-and deletes. BST's have more storage overhead due to pointers.
+* A sorted vector gives better performance if lookups are not mixed with 
+inserts and deletes. BST's have more storage overhead due to pointers.
 Arrays are contiguous and require less pages. There is locality. There can be 
 more page faults with BST because the data is spread out among several pages.
 
@@ -292,7 +292,8 @@ if (binary_search(v.egin(), v.end(), w) {}
 vector<>::iterator i = lower_bound(v.begin(), v.end(), w);
 if (i != v.end) && !(v < *i)
 
-pair<vector<T>::iterator, vector<T>::iterator> range = equal_range(v.gegin(), v.end(), w);
+pair<vector<T>::iterator, vector<T>::iterator> range = 
+                                       equal_range(v.gegin(), v.end(), w);
 if (range.first != range.second) ..
 sort(v.begin(), v.end());
                                        
@@ -340,14 +341,80 @@ Update:
 m[1] = 1.50
 In this case operator[] is more efficient.
 
-* Non standard associative containers: hash_set, hash_multiset, hash_map, hash_multimap
+* Non standard associative containers: hash_set, hash_multiset, hash_map, 
+hash_multimap
 
 
 ITERATORS:
 4 Types: iterator (T*), const_iterator(const T*), reverse_iterator(T*) and 
 const reverse_iterator(const T*)
-ITEM 26
 
- 
+ITEM 26
+* Implicit conversions available:
+iterator         -> const_iterator
+iterator         -> reverse_iterator
+reverse_iterator -> iterator (using base() member function)
+reverse_iterator -> const_reverse_iterator 
+const_reverse_iterator -> reverse_iterator (using base() member function)
+
+There is no way to convert from cons_iterator to iterator and 
+const_reverse_iterator to reverse_iterator.
+
+insert, erase and other container methods take iterators as input, so if you 
+have const iterators you can't call these methods. Its better to use just  
+iterators because you can always generate a const version from it if needed.
+
+Item 27:
+Use distance and advance to convert const_iterator to iterator
+* Except for vector and strings, for all other container types iterators and 
+const_iterators are different classes. So, a const_cast will not work.
+
+iterator i(const_cast<iterator>(citer)) will not compile
+
+ITEM 28:
+Reverse iterators
+* If you have access to the container the iterator came from, there is a safe
+and portable way to convert.
+iterator i(v.begin())
+advance(i, distance(i, ci))  //move i up to ci
+Actually, this call will not compile because advance() takes 2 InputIterator 
+types. The class of i and ci are different and the iterator types deduced from
+them are different.
+advance(i, distance<ConstIter>(i,ci)); //Treat both as const iterator and get 
+distance For random access iterator, this operation is very fast.
+
+* Insertions when you have reverse iterator
+You need to get regular iterator using ri.base() because the api takes only a
+regular iterator.
+
+ rend        rbegin
+ x 1 2 3 4 5 x
+   begin     end
+   
+when ri points to 3, ri.base() will point to 4
+inserting X at ri means, move 1,2,3 left 1 cell and insert X -> 123X45
+You would get the same behavior when you insert at ri.base() that is 4 -> 123X45
+So, these iterators are equivalent for insertions.
+
+* Deletions
+Since i is to right of ri, you need to decrement it for deleting.
+v.erase(--ri.base())
+I.e. the iterators are not equivalent for deleting.
+
+ITEM 29
+Reading from a file into a string
+* ifstream inputFile("foo.txt");
+string data(istream_iterator<char>(inputFile), istream_iterator<char>());
+  This fails to copy white space. Use
+  inputFile.unsetf(ios::skipws);
   
+istream_iterators use operator>> to do actual reading. Since, this is formatted
+input it is very slow. Instead you can use
+string data(istreambuf_iterator<char>(inputFile), istreambuf_iterator<char>());
+This reads individual characters directly from the buffer. Every char is grabbed
+including white space.
+
+ALGORITHMS:
+
   
+
