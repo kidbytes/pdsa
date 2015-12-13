@@ -543,10 +543,58 @@ can be converted to a bool. They are used in assoc containers as comparison
 functions, find_if, and various sorting algorithms.
 
 * A predicate class is a functor class whose operator() function is a predicate.        
+Function objects are always copied by value. So, if your function has nested calls,
+remember each nested call will make a copy of the predicate and if predicate has 
+state the change in state is lost after the call to nested function. You can't 
+transfer the new state to next method.
 
 
+ITEM 40:
+Make functor classes adaptable
+* Suppose you want to find out if a pointer points to an interesting widget this
+  works:
+	bool isInteresting(const Widget *pw)
+	iterator i = find_if(v.begin(), v.end(), isInteresting)
+	if (i != v.end())
 
+* Suppose you want to find first pointer that is not interesting:
+	find_if(v.begin(), v.end(), not1(isIntersting))
+This will not compile. Each of the 4 standard function adapters: not1, not2,
+bind1st and bind2nd require the existence of certain typedefs. Even if you are 
+writing your own adapter, you have to provide these typedefs. Function objects
+that provide these typedefs are said to be adaptable. 
 
+* ptr_fun(isInteresting)
+Takes a lowly pointer and returns an object that provides these typedefs.
+The object probably overrides operator().
+
+* The typedefs are argument_type, firsrt_argument_type, second_argument_type and 
+result_type. The conventional way to provide them is to inherit them from a base 
+class, or, more precisely , a base struct. For functor classes whose operator() 
+takes one argument, the struct to inherit from is std::unary_function. For two 
+arguments the struct to inherit from is std::binary_function. 
+
+* unary and binary functions are templates. You can't directly inherit from them.
+You inherit from structs they generate and that requires you specify some type
+arguments. For unary, you specify type parameter taken by your functor class's
+operator() and return type. For binary you specify both the arguments for 
+operator() and return type.
+
+	template<typename T>
+	class MeetsThreshold::public std::unary_function<Widget, bool> {
+	private:
+		const T threshold;
+	public:
+		bool operator()(const Widget&) const;
+	};
+	
+	struct WidgetNameCompare: std::binary_function<Widget, Widget, bool> {
+		bool operator(const Widget& lhs, const Widget& rhs) const;
+	};
+
+Note: Template param is Widget but operator() arg isn const Widget. In general,
+non-pointer types passed to unary and binary_function have constants and
+references stripped off. For pointer types, the args have to match exactly.
 
 
   
