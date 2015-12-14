@@ -574,7 +574,7 @@ class, or, more precisely , a base struct. For functor classes whose operator()
 takes one argument, the struct to inherit from is std::unary_function. For two 
 arguments the struct to inherit from is std::binary_function. 
 
-* unary and binary functions are templates. You can't directly inherit from them.
+* unary and binary_functions are templates. You can't directly inherit from them.
 You inherit from structs they generate and that requires you specify some type
 arguments. For unary, you specify type parameter taken by your functor class's
 operator() and return type. For binary you specify both the arguments for 
@@ -595,6 +595,60 @@ operator() and return type.
 Note: Template param is Widget but operator() arg isn const Widget. In general,
 non-pointer types passed to unary and binary_function have constants and
 references stripped off. For pointer types, the args have to match exactly.
+
+* By inheriting from unary and binary you get the typedef's automatically.
+
+ITEM 41:
+ptr_fun, mem_fun, mem_fun_ref
+* Let f be a function and x be an object. 3 ways of calling f on x
+	1. f(x)
+	2. x.f()     // f is a member function and x is an obj or ref
+	3. p->f()    // f is a member function and p is a pointer to x
+Functions and function objects in STL are always invoked using syntax 1 i.e
+non-member functions. Other kinds of call will not compile. Exmaple:
+	for_each(v.begin(), v.end(), &Widget::test).
+
+* mem_fun and mem_fun_ref arrange for member functions to be called using 
+syntax 1. There are several declarations. One example is:
+	template<typename R, typenameC> 
+	mem_fun_t<R,C> mem_fun(R(C::*pmf)()) //fptr that takes nothin and returns R
+	
+mem_fun takes pointer to a member function, pmf, and returns an object
+of type mem_fun_t. This declaration is for non-const member functions
+taking no parameters. C is the class, R is the return type of the pointed
+to member function. mem_fun_t is a function object that holds the member
+function pointer and overrides operator() to invoke the encapsulated 
+member function.
+	for_each(v.begin(), v.end(), mem_fun(&Widget::test));
+In each iteration of the for_each loop, syntax 1 is called on mem_fun_t 
+which invokes operator(). Within operator(), syntax 3 is used to invoke the 
+actual member function.
+
+* mem_fun_t is called function object adapter. mem_fun_ref adapts syntax 
+2 to syntax 1 while mem_fun_t adapted syntax 3 to syntax 1. Apart from adapting
+these objects also provide important typedefs like original ptr_fun.
+
+ITEM 42:
+Make sure less<T> means operator <
+Default comparison functions for assoc containers is less<T> and less<T> does
+its work by calling operator <. Its bad to severe the ties between them. 
+	template<> struct std::less<Widget>:
+			public std::binary_function<Widget, Widget, bool> {
+				bool operator() (const Widget& lhs, const Widget& rhs) const
+				{
+				 return lhs.maxSpeed() < rhs.maxSpeed();
+				}
+			};
+			
+Instead you could create a new compare class:
+	public MaxSpeedCompare: public binary_function<..> {
+		bool operator() (const Widget& lhs, const Widget& rhs) const
+			{
+			 return lhs.maxSpeed() < rhs.maxSpeed();
+			}
+	}
+
+
 
 
   
