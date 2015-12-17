@@ -759,3 +759,251 @@ CONDITION VARIABLES:
 variables allow threads to synchronize based upon the actual value of data. Without
 condition variables, we have to use continuous polling (possibly in a critical section),
 to check if the condition is met.
+
+
+
+
+######################
+# RECURSIVE          #
+######################
+def print_preorder(nd):
+    print nd   
+
+    if (nd.left is not None):  
+        print_preorder(nd.left)
+        
+    if (nd.right is not None): 
+       print_preorder(nd.right)
+
+    return
+
+def print_inorder(nd):
+    if (nd.left is not None):  
+        print_inorder(nd.left)
+        
+    print nd   
+    
+    if (nd.right is not None): 
+       print_inorder(nd.right)
+
+    return
+    
+def print_postorder(nd):
+    if (nd.left is not None):  
+        print_postorder(nd.left)
+        
+    if (nd.right is not None): 
+       print_postorder(nd.right)
+
+    print nd   
+
+    return
+    
+def reset_flags(nd):
+    nd.lflag = nd.rflag = False   
+
+    if (nd.left is not None):  
+        reset_flags(nd.left)
+        
+    if (nd.right is not None): 
+       reset_flags(nd.right)
+
+    return
+
+def depth(nd):
+    
+    if (nd.left is None and nd.right is None):
+        return 0
+    
+    ldepth = rdepth = 0
+    if (nd.left):
+        ldepth = 1 + depth(nd.left)
+        
+    if (nd.right):
+        rdepth = 1 + depth(nd.right)
+        
+    return max(ldepth, rdepth) 
+        
+    
+def lwidth(nd):
+    if (nd.left is None and nd.right is None):
+        return 0
+    
+    lw = rw = 0
+    if (nd.left):
+        lw = lwidth(nd.left) + 1
+    if (nd.right):
+        rw = lwidth(nd.right) - 1
+    
+    return max(lw, rw)
+    
+    
+def rwidth(nd):
+    if (nd.left is None and nd.right is None):
+        return 0
+    
+    lw = rw = 0
+    if (nd.right):
+        rw = rwidth(nd.right) + 1
+    if (nd.left):
+        lw = rwidth(nd.left) - 1    
+        
+    return max(rw, lw)
+        
+            
+def width(nd):
+    
+    lw = rw = 0
+    if nd.left:
+        lw = lwidth(nd.left) + 1
+        
+    if nd.right:
+        rw = rwidth(nd.right) + 1       
+        
+    print "width: lw=%d, rw=%d"% (lw, rw)
+            
+    return lw + rw;
+                  
+    
+            
+        
+######################
+# ITERATIVE          #
+######################    
+def print_preorder_i(nd):
+    stk = [nd]
+     
+    while (len(stk)):
+        curr = stk.pop()
+        
+        while (curr):
+            print curr
+            if (curr.right):
+                stk.append(curr.right)
+                
+            curr = curr.left
+            
+
+        
+def print_inorder_i(nd):
+    stk = [nd]
+    
+    while (len(stk)):
+        curr = stk.pop()
+        
+        if (curr.lflag):
+            print curr
+            if (curr.right):
+                stk.append(curr.right)
+                
+        else:            
+            while (curr is not None):
+                curr.lflag = True 
+                stk.append(curr)
+                curr = curr.left
+    
+    
+    
+def print_postorder_i(nd):
+    stk = [nd]
+    
+    while (len(stk)):
+        curr = stk.pop()
+        
+        if (curr.lflag and curr.rflag):
+            print curr
+            
+        elif (curr.lflag):
+            if(curr.right):
+                curr.rflag = True
+                stk.append(curr)
+                stk.append(curr.right)
+            else:
+                print curr
+        
+        else:
+            while (curr is not None):
+                curr.lflag = True 
+                if (curr.right is None):
+                    curr.rflag = True
+                stk.append(curr)
+                curr = curr.left
+                    
+                    
+    
+def print_bfs(nd):
+    stk = [nd]
+    
+    while (len(stk)):
+        curr = stk.pop(0)
+        print curr
+        if (curr.left):
+            stk.append(curr.left)        
+        if (curr.right):
+            stk.append(curr.right)
+
+
+            
+            
+        
+class BinTree(object):
+    def __init__(self, head=None):
+        self.head = head
+        self.recent = head
+        
+    def add_list(self, dataList):
+        for d in dataList:
+            self.add(d)
+            
+    def add(self, data):
+        node = Node(data)
+        if self.head is None:
+            self.head = self.recent = node
+            return
+        
+        curr = self.head
+        while (curr is not None):
+            if (node.data <= curr.data):
+                if (curr.left is None):
+                    curr.left = node
+                    return
+
+                curr = curr.left
+            else:
+                if (curr.right is None):
+                    curr.right = node
+                    return
+
+                curr = curr.right
+                
+    def print_inorder(self):
+        if (self.head is None): return
+        print "\nINORDER_I - Head %d" % self.head.data
+        print_inorder_i(self.head)
+        reset_flags(self.head)
+       
+    def print_preorder(self):
+        if (self.head is None): return
+        print "\nPREORDER_I - Head %d" % self.head.data
+        print_preorder_i(self.head)
+        reset_flags(self.head)
+
+    def print_postorder(self):
+        if (self.head is None): return
+        print "\nPOSTORDER_I - Head %d" % self.head.data
+        print_postorder_i(self.head)
+        reset_flags(self.head)
+
+    def print_bfs(self):
+        if (self.head is None): return
+        print "\nBFS - Head %d" % self.head.data
+        print_bfs(self.head)
+        reset_flags(self.head)
+        
+    def depth(self):
+        if (self.head is None): return
+        return depth(self.head)
+    
+    def width(self):
+        if (self.head is None): return
+        return width(self.head) 
