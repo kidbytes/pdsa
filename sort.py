@@ -204,6 +204,9 @@ def test_nth_largest(inOutList):
         print "%d Largest:\t%d" % (x, nth_largest(inOutList, x)) 
 
 #
+# Everything to the left of lt is less than pivot
+# Everything to the right of gt is greater than pivot
+# Everything from lt to the left of i is equal to pivot
 #  -----------------------------
 #  < V  |  =V   |        | >V   |
 #  -----------------------------

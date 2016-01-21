@@ -103,6 +103,7 @@ class BST:
     def rank(self, data):
         return self._rank(self.head, data)
             
+    # Prints in level order
     def print_bst(self):
         print "\nBST:"
         lst = []

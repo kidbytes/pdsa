@@ -702,7 +702,9 @@ x & (-x)      --> Isolate the right most 1 bit
 x & ~(x-1)    --> Same
 
 Actually -x is the same as ~(x-1) in 2s complement
--3 = (16-3) = 13 = 1101
+-x is also equal to (numSymbols - x). If you have 4 digits, then numSymbols = 16.
+The symbols are from 0 - 15.
+-3 = (16-3) = 13 = 1101    
 -3 = ~(3-1) = ~2 = 1101
 
 
@@ -760,9 +762,22 @@ variables allow threads to synchronize based upon the actual value of data. With
 condition variables, we have to use continuous polling (possibly in a critical section),
 to check if the condition is met.
 
+//Checking
+	mutex.lock();
+	while (false == predicate()) {         
+	    condition.wait(&mutex);  //mutex will be unlocked automatically
+	}
+	
+	..
+	mutex.unlock();
 
 
-
+//Setting
+	mutex.lock();
+	setPredicateTrue();
+	muntex.unlock();
+	
+	
 ######################
 # RECURSIVE          #
 ######################
@@ -1007,3 +1022,62 @@ class BinTree(object):
     def width(self):
         if (self.head is None): return
         return width(self.head) 
+        
+        
+        $600 for everything
+        Build
+        
+        
+/*
+def put_object(obj, weight):
+    objMap = {}
+    if (objMap.has_key(obj)):
+        wt = objMap[obj]
+        delta = wt - weight
+        objMap[obj] = weight
+    else:
+        delta = weight
+        
+    total_weight += delta
+*/        
+
+
+/*
+
+    A
+   / \
+  B   C
+ / \   \
+D   E   F
+
+DBEACF
+void inorder2(const Node* ptr)
+{
+    if (!ptr)
+        return;
+
+    Node* parent = ptr;
+    Node* curr = ptr;
+    while (true)    
+    {
+        if (parent->flag == false) {
+            while(curr->left) {
+                parent = curr;
+                curr = curr->left
+            }
+            myPrint(parent)
+            parent = parent->parent;
+            
+            if (parent == NULL)
+                return;
+            if (parent->right) {
+                myPrint(parent);
+                curr = parent->right;
+                parent->flag = true;
+            }
+        }
+        
+        if (parent->flag)
+            parent = parent->parent;
+    }
+}

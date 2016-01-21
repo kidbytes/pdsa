@@ -40,7 +40,7 @@ def int_to_string(x):
     if (isNegative):
         out.append('-')
         
-    return ''.join(map(str, out[::-1]))
+    return ''.join(map(str, out[::-1])) # Reverse
 
 ##
 def string_to_int(x):
