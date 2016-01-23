@@ -1,0 +1,20 @@
+1. Consider static factory methods instead of constructors
+	public static Boolean valueOf(boolean b) {
+		return b ? Boolean.TRUE : Boolean.FALSE;
+	}
+This can be provided in addition to constructors. Advantages:
+a. Can have well chosen names. A class can only have a single ctr()
+   with given signature. Static methods can take same params but have
+   different names - use well chosen names.
+b. They are not required to create a new object each time they are invoked.
+   Eg. Immutable classes can return preconstructed instances. The method
+   above uses this technique.
+c. Can return an object of any subtype of their return type. The returned
+   objects need not be public. For instance, implementation classes can
+   be hidden but returned - used to build interface-based frameworks.
+   
+Instance controlled classes:
+Maintain strict control over what instances exist at any time.
+Eg. Singleton, 
+For Immutable classes, t makes guarantee that no two equal instances exist:
+a.equals(b) if and only if a==b. Operator == is more efficient.
