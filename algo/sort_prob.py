@@ -1,5 +1,3 @@
-import util
-
 # In a array count of all entries such that i < j but a[i] > a[j]
 #
 # The number of inversions is 0 only if the array is sorted in asc order.

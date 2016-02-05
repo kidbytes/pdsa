@@ -4,8 +4,6 @@ Created on Jan 22, 2016
 @author: surya
 '''
 
-import util
-
 # 1 2 3
 # l=0 r=2 m=1
 # l=0 r=1 m=0 OR l=2 r=2 m=2
