@@ -1,3 +1,38 @@
+'''
+     A              
+  B     C           
+D   E F   G
+
+A B C D E F G
+0 1 2 3 4 5 6
+
+       0
+    1     2
+  3   4 5   6
+7   8
+
+
+If 0 is at level 0 then #nodes at leveli = 2^i
+Children of B = (2*1+1) and (2*i+2)
+            1 = 3 and 4
+            2 = 5 and 6
+            
+Parent = (i-1)/2
+B and C have indexes 1 and 2
+
+If 0 is at level 1 then #nodes at level i = 2^(i - 1)
+
+In a full binary tree, #leaves = number of other nodes + 1
+So, about half of the nodes are leaves
+#leaves = (#nodes + 1)/2
+
+#Nodes: 9
+#Leaves = (9+1)/2 = 5
+
+
+'''
+
+
 class Heap:
     def __init__(self, initial_list=None):
         self.data = ['dummy']

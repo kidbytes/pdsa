@@ -651,61 +651,6 @@ Instead you could create a new compare class:
 
 
 
-Thinking about Bits:
-* ASCII:  
-Dec 0 is NUL
-Dec 8 is Backspace
-Dec 32 is Space
-Dec 127 is DEL  --> Last character
-
-Dec [48-57]  is [0-9]
-Dec [65-90]  is [A-Z]
-Dec [97-122] is [a-z]
-
-Dec 48 is Hex 30
-
-* Byte is the lowest level at which you can access data; there's no "bit" type and
-we can't ask for an individual bit or perform operations on it. Every bit wise operator
-will be applied to an entire byte.
-
-* Left and right shift operators are not implementation dependent for unsigned numbers.
-For signed numbers, the right shift operator is implementation defined.
-
-* On left shift, zero's are used for padding on the right end. Left shift is equivalent
-to multiplying by power of 2. When you shift more than that can fit, you get all 0's.
-
-* Right shift is equivalent to intger division by 2. Right shift 5 by 1 bit gives 2.
-Whether the padding to left is 0 or not is implementation defined.
-
-* Shifting by 0 bits will give the same number.
-
-* val = val | 1 << n
-Sets the nth bit to 1 in val
-
-* Largest possible value for an unsigned integer:
-unsigned int max = ~0
-
-* A XOR 0 --> you will always get A back
-  A XOR 1 --> you will always get ~A back
-  
-  If you XOR with 1 twice, you will the original back
-
-* 
-x & (1 << n)  --> Test nth bit
-x | (1 << n)  --> Set nth bit
-x & ~(1 << n) --> Unset nth bit
-x ^ (1 << n)  --> Toggle nth bit
-x & (x - 1)   --> Turn off right most 1 bit
-x & (x + 1)   --> Turn on right most 0 bit 
-~x & (x+1)    --> Isolate the right most 0 bit
-x & (-x)      --> Isolate the right most 1 bit
-x & ~(x-1)    --> Same
-
-Actually -x is the same as ~(x-1) in 2s complement
--x is also equal to (numSymbols - x). If you have 4 digits, then numSymbols = 16.
-The symbols are from 0 - 15.
--3 = (16-3) = 13 = 1101    
--3 = ~(3-1) = ~2 = 1101
 
 
 THREADS:
@@ -1081,3 +1026,62 @@ void inorder2(const Node* ptr)
             parent = parent->parent;
     }
 }
+
+.###..........###
+.###..###.......#
+.###..#.#.....###
+......###.......#
+..............###
+.................
+
+
+def class Node:
+    self.color = white
+    self.visited = False
+    self.neighbors = []
+    
+    
+def DFS(nd):
+    nd.visited = True
+    count = 1
+    
+    for nei in nd.neighbors:
+        if (nei.color == 'white'):
+            next
+            
+        if not nei.visited:
+            nei.visited = True
+            count += 1
+            DFS(nei)
+            
+    return (nd, count)
+
+
+
+def Erase(nd):
+    nd.color = white
+
+    for nei in nd.neighbors:
+        if nei.color == 'black':
+            nei.color = white
+            DFS(nei)
+        
+
+def foo(listOfLists):
+    maxCnt = None
+    maxNd = None
+    
+    for list in listOfLists:
+        for entry in list:
+            if (entry.color == 'white'):
+                next
+                
+            if entry.visited:
+                next
+                
+            (nd, cnt) = DFS(entry)
+            if (maxCnt is None or cnt > maxCnt):
+                maxCnt = cnt
+                maxNd = nx
+                
+    Erase(maxNd)

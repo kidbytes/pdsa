@@ -89,6 +89,7 @@ class SList:
             return nd
         else:
             tmp = nd.next
+            nd.next = None
             return self.rdelete_with_value(tmp, data)
             
     def reverse(self, nd):
