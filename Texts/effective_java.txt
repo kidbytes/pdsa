@@ -16,5 +16,5 @@ c. Can return an object of any subtype of their return type. The returned
 Instance controlled classes:
 Maintain strict control over what instances exist at any time.
 Eg. Singleton, 
-For Immutable classes, t makes guarantee that no two equal instances exist:
+For Immutable classes, it makes guarantee that no two equal instances exist:
 a.equals(b) if and only if a==b. Operator == is more efficient.
