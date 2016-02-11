@@ -1,5 +1,6 @@
 import random
 import list
+import sys
 
 # Maximize x[j]- x[i] subject to i<j
 def max_difference_bruteforce(x):
@@ -36,6 +37,21 @@ def max_difference_better(x):
     return [maxDiff, iSave, jSave]
     
 def main():
+    myX = '''
+    <test name="ATJ-%0d">
+    <parameter name="testCaseId" value="ATJ-%0d" />
+    <classes>
+        <class name="com.verizon.cao.selenium.modules.Apply_To_Jobs" />
+    </classes>
+    </test>
+    '''
+    
+    for i in range(79, 141):
+        y = myX % (i, i)
+        print y
+        
+    sys.exit(0)
+    
 #     x = []
 #     for i in range(6):
 #         x.append(random.randrange(1,10))
