@@ -73,7 +73,7 @@ def num_bits_set(x):
     cnt = 0
     while(x):
         cnt+=1
-        x = x & (x-1)
+        x = x & (x-1)  # Unset the rightmost 1
         
     return cnt
 
@@ -134,7 +134,9 @@ def string_to_int(x):
 #   for each number
 #      extract each bit that is set to 1 from right
 #      for each bit set to 1, get the bit index by getting log
-#      the log value can be used as index into input array
+#      The log value can be used as index into input array
+# 001, 010, 011, 100, 101, 110, 111
+# (Gives, possible ways in which 1|2|3 bits can be turned on)
 def power_set(elems):
     if len(elems) == 0:
         print "Empty Input"

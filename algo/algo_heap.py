@@ -2,7 +2,7 @@
 # Stacks and Queues from heap
 # Maintain an integer variable 'order'.
 # Store items of type (order, x)
-# order is incrmemted for each item pushed into heap
+# order is incrememted for each item pushed into heap
 # Heap entries are compared on order
 # Stack: Max-Heap
 #        Last item inserted has maximum order

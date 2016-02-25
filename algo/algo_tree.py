@@ -92,7 +92,67 @@ def convert_bst_to_doubly_linked_list(nd, lastNd):
 
 
 
+'''
+.###..........###
+.###..###.......#
+.###..#.#.....###
+......###.......#
+..............###
+.................
 
+
+def class Node:
+    self.color = white
+    self.visited = False
+    self.neighbors = []
+    
+    
+def DFS(nd):
+    nd.visited = True
+    count = 1
+    
+    for nei in nd.neighbors:
+        if (nei.color == 'white'):
+            next
+            
+        if not nei.visited:
+            nei.visited = True
+            count += 1
+            DFS(nei)
+            
+    return (nd, count)
+
+
+
+def Erase(nd):
+    nd.color = white
+
+    for nei in nd.neighbors:
+        if nei.color == 'black':
+            nei.color = white
+            Erase(nei)
+        
+
+def foo(listOfLists):
+    maxCnt = None
+    maxNd = None
+    
+    for list in listOfLists:
+        for entry in list:
+            if (entry.color == 'white'):
+                next
+                
+            if entry.visited:
+                next
+                
+            (nd, cnt) = DFS(entry)
+            if (maxCnt is None or cnt > maxCnt):
+                maxCnt = cnt
+                maxNd = nx
+                
+    Erase(maxNd)
+'''
+    
 def main():
     inList = [1,2,3,4,5,6,7,8,9]
     nd = build_from_sortedlist(inList)

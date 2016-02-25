@@ -11,25 +11,15 @@ A B C D E F G
   3   4 5   6
 7   8
 
-
-If 0 is at level 0 then #nodes at leveli = 2^i
-Children of B = (2*1+1) and (2*i+2)
-            1 = 3 and 4
-            2 = 5 and 6
-            
-Parent = (i-1)/2
-B and C have indexes 1 and 2
-
-If 0 is at level 1 then #nodes at level i = 2^(i - 1)
-
-In a full binary tree, #leaves = number of other nodes + 1
-So, about half of the nodes are leaves
-#leaves = (#nodes + 1)/2
-
-#Nodes: 9
-#Leaves = (9+1)/2 = 5
-
-
+* Assume full binary tree
+Number of nodes at level i = 2^i   # i starts at 0
+Children at (2*1+1) and (2*i+2)            
+Parent at (i-1)/2
+Num Leaves = (n+1)/2 # Half + 1 of the nodes are leaves - even if the tree is not full
+Number of nodes at level i = (Total number of nodes till level i-1) + 1
+    
+For head sort, you can start at the first parent which is at n/2 index.
+Ex. If there are 9 nodes, then the first parent is at 4 (There are 5 leaves)
 '''
 
 

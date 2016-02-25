@@ -216,6 +216,7 @@ They don't have reserve() and capacity().
 * You can bitset. This is not an stl container, so no iterators. Plus the size
 is fixed at compile time meaning no inserts and deletes at run time.
 
+ITEM 19:
 ASSOCIATIVE CONTAINERS:
 * Automatically keep their items sorted. Use equivalence for comparison instead
 of equality. Maps don't do much with value part. They just store and retrieve.
@@ -223,7 +224,7 @@ Keys are important.
 
 * The generic stl find algorithm and set::insert need to determine if two
 values are the same. Find uses equality which is based on operator== and 
-insert uses equivalences which is based on operator <. It is possible they
+insert uses equivalence which is based on operator <. It is possible they
 return different values.
 
 * x == y is simple. It is true if values are equal. Note the implementation
@@ -827,81 +828,6 @@ def width(nd):
     
             
         
-######################
-# ITERATIVE          #
-######################    
-def print_preorder_i(nd):
-    stk = [nd]
-     
-    while (len(stk)):
-        curr = stk.pop()
-        
-        while (curr):
-            print curr
-            if (curr.right):
-                stk.append(curr.right)
-                
-            curr = curr.left
-            
-
-        
-def print_inorder_i(nd):
-    stk = [nd]
-    
-    while (len(stk)):
-        curr = stk.pop()
-        
-        if (curr.lflag):
-            print curr
-            if (curr.right):
-                stk.append(curr.right)
-                
-        else:            
-            while (curr is not None):
-                curr.lflag = True 
-                stk.append(curr)
-                curr = curr.left
-    
-    
-    
-def print_postorder_i(nd):
-    stk = [nd]
-    
-    while (len(stk)):
-        curr = stk.pop()
-        
-        if (curr.lflag and curr.rflag):
-            print curr
-            
-        elif (curr.lflag):
-            if(curr.right):
-                curr.rflag = True
-                stk.append(curr)
-                stk.append(curr.right)
-            else:
-                print curr
-        
-        else:
-            while (curr is not None):
-                curr.lflag = True 
-                if (curr.right is None):
-                    curr.rflag = True
-                stk.append(curr)
-                curr = curr.left
-                    
-                    
-    
-def print_bfs(nd):
-    stk = [nd]
-    
-    while (len(stk)):
-        curr = stk.pop(0)
-        print curr
-        if (curr.left):
-            stk.append(curr.left)        
-        if (curr.right):
-            stk.append(curr.right)
-
 
             
             
@@ -1027,61 +953,3 @@ void inorder2(const Node* ptr)
     }
 }
 
-.###..........###
-.###..###.......#
-.###..#.#.....###
-......###.......#
-..............###
-.................
-
-
-def class Node:
-    self.color = white
-    self.visited = False
-    self.neighbors = []
-    
-    
-def DFS(nd):
-    nd.visited = True
-    count = 1
-    
-    for nei in nd.neighbors:
-        if (nei.color == 'white'):
-            next
-            
-        if not nei.visited:
-            nei.visited = True
-            count += 1
-            DFS(nei)
-            
-    return (nd, count)
-
-
-
-def Erase(nd):
-    nd.color = white
-
-    for nei in nd.neighbors:
-        if nei.color == 'black':
-            nei.color = white
-            DFS(nei)
-        
-
-def foo(listOfLists):
-    maxCnt = None
-    maxNd = None
-    
-    for list in listOfLists:
-        for entry in list:
-            if (entry.color == 'white'):
-                next
-                
-            if entry.visited:
-                next
-                
-            (nd, cnt) = DFS(entry)
-            if (maxCnt is None or cnt > maxCnt):
-                maxCnt = cnt
-                maxNd = nx
-                
-    Erase(maxNd)

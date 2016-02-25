@@ -3,7 +3,7 @@
 # Events:
 # Start: [1,4,9,15,23]
 # End:   [3,5,15,27,25]
-from matplotlib._cntr import Cntr
+
 
 # To find an interval where there are maximum number of events active: 
 # Soln 1:
@@ -70,3 +70,26 @@ def find_intersection(root, x, y):
         find_intersection(root.right, x, y)
     else:
         find_intersection(root.left, x, y)
+        
+        
+'''
+Problem: Scheduling meetings in a room. 
+Input:
+There is only one meeting room available.
+There are n meetings. Each meeting has a start time and a finish time. 
+
+Objective: 
+Maximize the number of non-overlapping meetings scheduled in the
+same room. (That is, schedule as many meetings as possible in the conference room.)
+
+Strategy: Sort the meetings according to the finish time, and pick them greedily.
+
+
+Multiple Room Scheduling (in text)
+Given a set of requests with start and end times, the goal here is to schedule all events using the minimal number of rooms. Once again, a greedy algorithm will suffice:
+
+1) Sort all the requests by start time.
+2) Schedule each event in any available empty room. If no room is available, schedule the event in a new room.
+
+'''        
+        

@@ -1,3 +1,186 @@
+'''
+######################
+# RECURSIVE          #
+######################
+def print_preorder(nd):
+    print nd   
+
+    if (nd.left is not None):  
+        print_preorder(nd.left)
+        
+    if (nd.right is not None): 
+       print_preorder(nd.right)
+
+    return
+
+def print_inorder(nd):
+    if (nd.left is not None):  
+        print_inorder(nd.left)
+        
+    print nd   
+    
+    if (nd.right is not None): 
+       print_inorder(nd.right)
+
+    return
+    
+def print_postorder(nd):
+    if (nd.left is not None):  
+        print_postorder(nd.left)
+        
+    if (nd.right is not None): 
+       print_postorder(nd.right)
+
+    print nd   
+
+    return
+    
+def reset_flags(nd):
+    nd.lflag = nd.rflag = False   
+
+    if (nd.left is not None):  
+        reset_flags(nd.left)
+        
+    if (nd.right is not None): 
+       reset_flags(nd.right)
+
+    return
+
+def depth(nd):
+    
+    if (nd.left is None and nd.right is None):
+        return 0
+    
+    ldepth = rdepth = 0
+    if (nd.left):
+        ldepth = 1 + depth(nd.left)
+        
+    if (nd.right):
+        rdepth = 1 + depth(nd.right)
+        
+    return max(ldepth, rdepth) 
+        
+    
+def lwidth(nd):
+    if (nd.left is None and nd.right is None):
+        return 0
+    
+    lw = rw = 0
+    if (nd.left):
+        lw = lwidth(nd.left) + 1
+    if (nd.right):
+        rw = lwidth(nd.right) - 1
+    
+    return max(lw, rw)
+    
+    
+def rwidth(nd):
+    if (nd.left is None and nd.right is None):
+        return 0
+    
+    lw = rw = 0
+    if (nd.right):
+        rw = rwidth(nd.right) + 1
+    if (nd.left):
+        lw = rwidth(nd.left) - 1    
+        
+    return max(rw, lw)
+        
+            
+def width(nd):
+    
+    lw = rw = 0
+    if nd.left:
+        lw = lwidth(nd.left) + 1
+        
+    if nd.right:
+        rw = rwidth(nd.right) + 1       
+        
+    print "width: lw=%d, rw=%d"% (lw, rw)
+            
+    return lw + rw;
+                  
+    
+            
+        
+######################
+# ITERATIVE          #
+######################    
+def print_preorder_i(nd):
+    stk = [nd]
+     
+    while (len(stk)):
+        curr = stk.pop()
+        
+        while (curr):
+            print curr
+            if (curr.right):
+                stk.append(curr.right)
+                
+            curr = curr.left
+            
+
+        
+def print_inorder_i(nd):
+    stk = [nd]
+    
+    while (len(stk)):
+        curr = stk.pop()
+        
+        if (curr.lflag):
+            print curr
+            if (curr.right):
+                stk.append(curr.right)
+                
+        else:            
+            while (curr is not None):
+                curr.lflag = True 
+                stk.append(curr)
+                curr = curr.left
+    
+    
+    
+def print_postorder_i(nd):
+    stk = [nd]
+    
+    while (len(stk)):
+        curr = stk.pop()
+        
+        if (curr.lflag and curr.rflag):
+            print curr
+            
+        elif (curr.lflag):
+            if(curr.right):
+                curr.rflag = True
+                stk.appendd(curr)
+                stk.append(curr.right)
+            else:
+                print curr
+        
+        else:
+            while (curr is not None):
+                curr.lflag = True 
+                if (curr.right is None):
+                    curr.rflag = True
+                stk.append(curr)
+                curr = curr.left
+                    
+                    
+    
+def print_bfs(nd):
+    stk = [nd]
+    
+    while (len(stk)):
+        curr = stk.pop(0)
+        print curr
+        if (curr.left):
+            stk.append(curr.left)        
+        if (curr.right):
+            stk.append(curr.right)
+
+
+'''
+
 import util
 
 class Node:

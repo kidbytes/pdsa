@@ -134,8 +134,8 @@ def find_k_unknown_length(items, k):
 
 # Find kth largest in array A[n] in O(n) time when n is not known.
 # 1. Use min heap to store k largest elements. When a new element e comes in
-#    if (e < top) ignore
-#    else pop the top and insert e
+#    if (e > top)
+#       pop the top and insert e
 
 # 2. Take an array of size 2k-1. When the array becomes full, find kth largest
 #    using partition and discard the smallest k elements. You can use an array

@@ -16,7 +16,7 @@
 #            Replace char with X
 #            if new word found in dictionary:
 #                Delete word from dictionary   //So that during BFS we don't hit this again
-#                Push word to queue with counter incrementex
+#                Push word to queue with counter incremented
 #        Restore to original word   //We will be replacing next character
 
 

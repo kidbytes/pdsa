@@ -6,7 +6,9 @@ Created on Feb 4, 2016
 
 # Nearest Repeatition
 # Given a sentence, we need to find the nearest repeating words
-
+# Capture current index for each word in a hash.
+# For new word, check if the word already exists in hash and compute distance.
+# Maitain a running mim distance. If our distance is < minDistance, update minDistance. 
 def find_nearest_repetition(sentence):
     myMap = {}
     maxDist = 0
@@ -26,6 +28,8 @@ def find_nearest_repetition(sentence):
         
         
 # At most 1 character need not repeat
+# Mantain each char count in hash. 
+# Each count, except possible for one entry, has to be even
 def can_a_word_be_permuted_to_form_palindrome(word):
     myMap = {}
     for c in word:
@@ -45,6 +49,10 @@ def can_a_word_be_permuted_to_form_palindrome(word):
 
 # Partition a dictionary into anagrams
 # An anagram is a permutation of a word that is valid
+# When you sort all anagrams, they should all be equal
+# Maitain a hash where key is the sorted word and
+# value is a list of original words whose sorted value
+# equals the key
 def partition_anagrams(dictionary):
     myMap = {}
     
