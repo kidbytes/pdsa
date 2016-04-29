@@ -100,3 +100,26 @@ def find_k_suspicious_strings(string_list):
 # When searching, we get K hash values and see if the bit position is 1 for each.
 # If the bit is 0 even for a single hash function then the search should
 # be flagged failure.
+
+
+'''
+[2,2,3]
+2: {a,b,c}
+3: {d,e,f}
+
+
+iterList = []
+for i, x in enumerate(inputList):
+    iterList[i] = hash[inputList[x].iterator()]
+    
+def getNextWord(iterList):
+    updateIterators()
+    word = ''
+    for iter in iterList:
+        word.append(iter.value())
+     
+    return word    
+    
+    
+    
+'''

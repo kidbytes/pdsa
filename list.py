@@ -1,5 +1,39 @@
 import random
 
+'''
+Given a linked list and a value x, partition it such that all nodes less than x come before nodes greater than or equal to x.
+
+You should preserve the original relative order of the nodes in each of the two partitions.
+
+For example,
+Given 1->4->3->2->5->2 and x = 3,
+return 1->2->2->4->3->5.
+
+Node* ptr = inputNode;
+Node* list1 = NULL;
+Node* list2 = NULL;
+ 
+ 
+while(ptr) {
+  if (ptr->data < 3)
+      if (list1 == NULL) {
+        list1 = list1End = ptr
+      } else {
+         list1End->next = ptr
+         list1End = ptr
+      }
+  else
+      if (list2 == NULL) {
+        list2 = list2End = ptr
+      } else {
+         list2End->next = ptr
+         list2End = ptr
+      }
+      
+      list1End->next = list2
+      return list1;
+}
+'''
 
 class Node:
     def __init__(self, data):
