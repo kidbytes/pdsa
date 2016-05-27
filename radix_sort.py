@@ -1,5 +1,10 @@
+# The lower bound for any comparison based sorting is NLogN. 
+# Can we do better?
+# Radix sorts give us a performance of WN where W is length of key.
+
 # Key-Indexed Couting
 # Keys are between 0 and R-1
+# R is usually small but each item is repeated many times
 # Can use key as an array index
 # Count frequencies of each letter using key as index
 # Compute frequency cumulates
@@ -11,6 +16,20 @@
 # d 2   d->6
 # e 1   e->8
 # f 3   f->9
+
+# Consider a mapping of student name to section number
+# Since the section numbers are small and limited, we
+# can use section number as an index into an array and
+# sort student names using key indexed sort. However,
+# the sort will be stable
+
+
+# Key Indexed sort uses cumulates. In a cumulated array,
+# the value at an index tells where the next entry goes
+# Example: A['c'] = 3 tells the a key starting with 'c'
+# will go at index 3 in the final solution. Once we put a key,
+# we increment the index so that the next key with 'c' goes to the 
+# incremented index.
 
 def get_cumulates(items):
     cum = []
@@ -28,11 +47,17 @@ print x
 # Iterate over the original array, move item to temp, increment cumulate
 # Copy back from temp. This kind of sort is stable
     
-# LSD Sorting (Go from left to right)
+    
+# If you just have a list of strings you can LSD or MSD sorting.    
+# LSD Sorting (Go from right i.e least signigicant digit to right)
 # Task: Sort on fixed-length key field like SSN, Date, Acct Number, etc
-# Consider characters from right to left
 # Sort on each character using key-indexed counting
 # Sort must be stable
+# By the time you do the most significant character, the strings are
+# automatically sorted. For each character you are spending N+N
+# This is a linear sort
+
+
 
 # MSD Sorting (Go from right to left. Each char processed in a recursive call)
 # Works on variable length keys. Have to override charAt() method to return
@@ -43,6 +68,7 @@ print x
 # Too many recursive calls
 # A seperate count array needed in each call that needs to be initialized
 # Length of count array equals number of symbols R
+
 
 # Longest repeated substring
 # Use suffix sort. A string of length N has N suffixes

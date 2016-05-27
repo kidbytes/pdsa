@@ -86,10 +86,12 @@ Strategy: Sort the meetings according to the finish time, and pick them greedily
 
 
 Multiple Room Scheduling (in text)
-Given a set of requests with start and end times, the goal here is to schedule all events using the minimal number of rooms. Once again, a greedy algorithm will suffice:
+Given a set of requests with start and end times, the goal here is to schedule all 
+events using the minimal number of rooms. Once again, a greedy algorithm will suffice:
 
 1) Sort all the requests by start time.
-2) Schedule each event in any available empty room. If no room is available, schedule the event in a new room.
+2) Schedule each event in any available empty room. If no room is available, 
+schedule the event in a new room.
 
 '''        
         

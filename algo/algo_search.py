@@ -25,7 +25,7 @@ def find_k(items, k, l=None, r=None):
         r = len(items) - 1
         
     while (l <= r):
-        m =  m = l + (r - l >> 1)
+        m = l + (r - l >> 1)
         if (k == items[m]):
             return m
         
@@ -43,7 +43,7 @@ def first_occurence_of_k(items, k):
     first = None
     l = 0
     while (l <= r):
-        m =  m = l + (r - l >> 1)
+        m = l + (r - l >> 1)
         if (k == items[m]):
             first = m
             r = m - 1  # Keep searching left for better index

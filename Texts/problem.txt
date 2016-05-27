@@ -9,6 +9,19 @@ Goal: Maximize profits
 	  
 Compute max profit for i=1 to n
 
+W[i] --> Widths
+P[i] --> Profits
+
+Let the last cut have width x.
+Then S[n] = s[n-x] + P[x]
+Since x can be any cut, we compute for every x and pick the optimal cut
+So, we compute for all widths : 1,2,3,..n"
+Some of the widths may not exist but we still compute.
+We compute from bottom up.
+S[0] = 0
+S[1] = S[0] + P[1]
+
+
 
 maximum of (P1, P4), (P2, P3), (P5)
 The combinations will explode when n gets large
@@ -20,7 +33,7 @@ Best(n) = Pik + Best(n-ik)
 Number of options for the last cut = number of available cuts
 Try every possible cut and see what gives maximum profit.
 Best(n) = for (int i=1; i <= n ; i++)
-			max (Pi + Best(n-i));
+			max (P[i] + Best(n-W[i]));
 
 
 S[n] = S[n-i] + P[i]

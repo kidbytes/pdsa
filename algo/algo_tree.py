@@ -151,8 +151,52 @@ def foo(listOfLists):
                 maxNd = nx
                 
     Erase(maxNd)
-'''
     
+    
+    
+    def link_siblings(nd):
+        que = []
+        que.append(nd)
+        prev = None
+        
+        cnt = len(que)
+        while(len(que)):
+            x = que.pop(0)
+            if (prev is not None):
+                prev.next = x
+            prev = x            
+            
+            cnt -= 1
+            if (x.left is not None):
+                que.append(x.left)
+            if (x.right is not None):
+                que.append(x.right)
+            
+            if (cnt == 0):
+                prev = None
+                cnt = len(que)
+            
+'''
+0       0
+2       4
+4       16      4^2  2^4
+8       64      4^3  2^6
+16      256
+
+Divisible by 4
+1010101010101010100
+if (input & mask):
+    if (input & input-1 == 0)  //Only 1 bit must be set
+    
+
+1010011
+
+10101010 
+10101001
+10101000
+
+(mask & x) (x & (x-1))
+32    
 def main():
     inList = [1,2,3,4,5,6,7,8,9]
     nd = build_from_sortedlist(inList)
