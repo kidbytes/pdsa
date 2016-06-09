@@ -1,0 +1,105 @@
+*** VECTOR
+vector<int> first;                                // empty vector of ints
+vector<int> second (4,100);                       // four ints with value 100
+vector<int> third (second.begin(),second.end());  // iterating through second
+vector<int> fourth (third);                       // a copy of third
+
+// the iterator constructor can also be used to construct from arrays:
+int myints[] = {16,2,77,29};
+std::vector<int> fifth (myints, myints + sizeof(myints) / sizeof(int) );
+
+* assign(): Replace current contents with new contents and update size accordingly. 
+Automatic reallocation if required
+
+first.assign (7,100);             // 7 ints with a value of 100
+second.assign (first.begin(),first.end()-1); // the 5 central values of first
+
+* at(i): Returns a ref at index i. Checks index bounds and throws out_of_range exception
+
+* capacity(): >= size. Allocated storage capacity of the vector
+Altered by reserve()
+
+* clear(): Removes all elements leaving the container with a size of 0
+
+* front() / back(): Returns a ref to first/last element of the vector
+
+* insert(pos, val) : Inserts val at pos. The current element appears after val
+
+* void pop_back(): Removes the last element. Size is reduced by 1
+
+* reserve(n): Increases the capacity to contain n elements. If the current capacity
+is > n already then the call does nothing.
+
+* resize(n): Resizes the vector to n. Can reallocate or truncate the vector i.e items
+are inserted or erased. In the end size() returns n 
+
+* swap(dest): swaps the current container with dest. Existing iterators, pointers and references
+are valid and point to the same elements but in the other container.
+
+
+*** LIST
+* Implemented as doubly linked lists
+* Constant insert and erase anywhere within the sequence and iteration in both directions.
+
+* Lack direct access to the elements by their position. 
+
+* assign(): Replace current contents with new contents and update size accordingly
+
+* front() / back(): Returns a ref to first/last element
+
+* clear(): Removes all elements leaving the container with a size of 0
+
+* erase(pos): Removes single element at pos. Has range version too.
+
+* insert(pos, val): Inserts new element at pos. Existing element appears after inserted element
+Has range version too.
+
+* merge(x): merges all elements in x at their respective positions.
+This removes all elements in x. Elements are just transfered. Not ctr/dtr calls.
+
+* void pop_back()/pop_front(): Removes last/first element
+
+* void push_back()/push_front(): Add a new element at end/front
+
+* remove(val): Removes all elements that compare equal to val. dtr is called
+
+* remove_if (pred): Removes all elements for which pred returns true
+
+* resize(): Same as vector. Resizes the container so that it contains n elements.
+Possible truncation or reallocation.
+
+* reverse(): Reverses the order of elements
+
+* sort(cmp): Sorts the elements. If comp is missing uses operator <.
+Comparison should produce a strict weak ordering of elements.
+
+* splice(pos, x): Transfers elements from x into the container, inserting them as pos.
+This alters the size of both containers.
+
+* swap(x): Swaps container with x.
+
+* unique(): If list is sorted, this method removes duplicates.
+
+
+*** DEQUE
+* Double ended queues are sequence containers that can expand/contract on both ends.
+
+* Supports random access iterators
+
+* Not guaranteed to store elements in contiguous storage locations. Can't use pointer arithmetic.
+But can use random access iterators.
+
+* front() / back()
+
+* push_back() / push_front()
+
+* pop_back() / pop_front()
+
+* insert() / erase()
+
+* swap()
+
+*** SET
+
+
+* clear()

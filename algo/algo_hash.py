@@ -4,11 +4,11 @@ Created on Feb 4, 2016
 @author: surya
 '''
 
-# Nearest Repeatition
+# Nearest Repetition
 # Given a sentence, we need to find the nearest repeating words
 # Capture current index for each word in a hash.
 # For new word, check if the word already exists in hash and compute distance.
-# Maitain a running mim distance. If our distance is < minDistance, update minDistance. 
+# Maitain a running min distance. If our distance is < minDistance, update minDistance. 
 def find_nearest_repetition(sentence):
     myMap = {}
     maxDist = 0

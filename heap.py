@@ -19,18 +19,25 @@ Ex. 9th node is at index 8 => parent is at index (8-1)/2 = 3
 Ex. 8th node is at index 7 => parent is at index (7-1)/2 = 3
  
 Num Leaves = (n+1)/2 # Half + 1 of the nodes are leaves 
-If the tree is not full, number of leaves can be Half. Eg. Remove 8 above
+If the tree is not full, number of leaves can be Half. Eg. Remove 8 above.
 So, at least half of the nodes are leaves in any binary full binary tree
-Full and complete has exactly half+1 leaves.
+Full and complete have exactly half+1 leaves.
 Number of nodes at level i = (Total number of nodes till level i-1) + 1
     
-For head sort, you can start at the first parent which is at n/2 index.
-Ex. If there are 9 nodes, then the first parent is at 4 (There are 5 leaves)
+For heap sort, you can start at the first parent which is at n/2 index.
+Ex. If there are 9 nodes, then the first parent is node 4 (There are 5 leaves)
+and its index is 3. If there are 8 nodes, then again parent is at 3.
+When number of nodes is given, parent is n/2th node and index is (n/2-1)
+When working with indexes, parent is at (i-1)/2 index.
 
 Deleting a Node:
 When you pop the top most element, you replace it with last element and do a sink.
 You can do a similar thing for any node. Replace it with the last element and
 do a sink. 
+
+Change the value:
+In a max heap if the value decreases, you sink.
+If the value increases you swim
 '''
 
 

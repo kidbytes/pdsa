@@ -42,7 +42,7 @@
 #
 # In the above case, the top most node has a value of "" and link for s initialized.
 # If you follow this link,  you will reach a node that has a value None and link for
-# h set. The node for e will have a value of 0. You can also augment the node with 
+# h. The node for e will have a value of 0. You can also augment the node with 
 # a field that stores the character it represents in the chain. Or you can keep
 # track of it outside while traversing.
 
@@ -60,6 +60,17 @@
 # But if you want to do auto-complete i.e find lexically next keys then ?
 # I think you just emit all non-null links at that node.
 
+'''
+def auto_complete(nd, prefix, out):
+    foreach idx, link in enumerate(nd.links):
+        if (link != None):
+             nextChar = char(ord('a') + idx
+            if (link.value != None):
+                out.append(prefix + nextChar)
+            auto_complete(link, prefix + nextChar, out)
+        
+        
+'''
 # A not None link represents the character and we need not store the actual  
 # Root node has only links and not key or value
 #
