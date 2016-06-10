@@ -99,7 +99,60 @@ But can use random access iterators.
 
 * swap()
 
+
 *** SET
+* set<int, classcomp> x; //Comparison class is classcomp with operator() overloaded
+
+* Stores unique elements in a sorted order which may be different from the order in 
+which elements were inserted. Typically implemented as BSTs.
+
+* Once in the set they cannot be modified.
+
+* clear(): Removes all elements, leaving the container with size 0.
+
+* count(val): Returns count of elements that are equivalent to val
+
+* find(val): Returns a iterator to val if found. Otherwise, return set::end()
+
+* lower_bound(val): Returns an iterator to first element >= val
+If val is there, iterator to it is returned. Otherwise, iterator to next element is returned.
 
 
-* clear()
+* upper_bound(val): Returns a iterator to the first element > val
+1 1 2 3  - lower_bound(1) returns 0 index and upper_bound(1) return 2 index
+
+* equal_range(val): Returns a [lower_bound, upper_bound) range for elements equivalent to val
+Returns a pair of iterators
+
+* erase(iter): Erases an element. Range version available too
+
+* swap(x): Swaps this container wih x
+
+
+*** MULTISET
+* find(val): Returns an iterator to any of the matching val.
+To get all matching elements, use equal_range()
+
+* erase(): Will remove all matching elements
+
+*** MAP
+* Associative container. Sorted on keys
+
+* at(key): Returns a reference to mapped value identified with key k.
+If not available throws out_of_range exception
+
+* find(key): Returns a iterator to key if found. Otherwise, return set::end()
+
+* clear(): Removes all elements, leaving the container with size 0.
+
+* count(key): Returns number of occurences of key
+
+* equal_range(): Same as set
+
+* pair<iterator, bool> insert(): Extends the container by inserting new element.
+If the key already exists, item is not inserted and bool is set to false.
+
+* operator[](key): If key exists, function returns a reference to its mapped value.
+Otherwise, it inserts a new element with that key and default value_type and returns a reference to it.
+
+* swap(): Same as set
