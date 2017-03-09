@@ -56,8 +56,9 @@ def process(endPoints):
 
 # If we go left because x < root.left.max and there is no intersection, then there
 # cannot be intersection on the right tree i.e. we are not taking a chance by going left.
-# In this case it is possible x is less than max of both right and left trees. We are still right.
+# In this case it is possible x is less than max of both right and left trees. We are still correct.
 # This is because x of each node in left tree is less than x on right.
+# i.e if x < root.left.max and if x < root.right.max, we still go left.
 
 def find_intersection(root, x, y):
     if (root is None):

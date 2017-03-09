@@ -103,4 +103,10 @@ for (int c=1; c <= C; c++) {
 	S[c] = maxVal;
 }      
 
+prod = (prod * a[i])/a[i-2]
+if (prod > maxProd)
+	maxProd = prod
+i++
+
+
   

@@ -21,6 +21,8 @@ Altered by reserve()
 
 * clear(): Removes all elements leaving the container with a size of 0
 
+* erase(pos): Erases item at position pos. Causes reallocation. Range version available too.
+
 * front() / back(): Returns a ref to first/last element of the vector
 
 * insert(pos, val) : Inserts val at pos. The current element appears after val
@@ -73,7 +75,7 @@ Possible truncation or reallocation.
 * sort(cmp): Sorts the elements. If comp is missing uses operator <.
 Comparison should produce a strict weak ordering of elements.
 
-* splice(pos, x): Transfers elements from x into the container, inserting them as pos.
+* splice(pos, x): Transfers elements from x into the container, inserting them at pos.
 This alters the size of both containers.
 
 * swap(x): Swaps container with x.
@@ -85,6 +87,8 @@ This alters the size of both containers.
 * Double ended queues are sequence containers that can expand/contract on both ends.
 
 * Supports random access iterators
+
+* There is no reserve() and capacity()
 
 * Not guaranteed to store elements in contiguous storage locations. Can't use pointer arithmetic.
 But can use random access iterators.
@@ -117,8 +121,7 @@ which elements were inserted. Typically implemented as BSTs.
 * lower_bound(val): Returns an iterator to first element >= val
 If val is there, iterator to it is returned. Otherwise, iterator to next element is returned.
 
-
-* upper_bound(val): Returns a iterator to the first element > val
+* upper_bound(val): Returns an iterator to the first element > val
 1 1 2 3  - lower_bound(1) returns 0 index and upper_bound(1) return 2 index
 
 * equal_range(val): Returns a [lower_bound, upper_bound) range for elements equivalent to val
