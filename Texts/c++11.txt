@@ -1,0 +1,89 @@
+* Function template
+template<typename T>
+void f(ParamType param)
+
+f(expr)
+Compilers use expr to deduce 2 types: 
+-> one for T
+-> one for ParamType.
+They can be different because ParamType can contain const, reference, etc qualifiers.
+Ex:
+template<typename T>
+void f(const T& param)
+
+int x=0;
+f(x) => T is deduced to be int, but ParamType is const int&
+===============================================
+
+* The type deduced for T is dependent on
+-> type of expr
+-> form of ParamType
+===============================================
+
+* Three cases based on form of ParamType
+Case 1. ParamType is a Reference or Pointer. 
+if expr is reference, ignore it.
+
+template<typename T>
+void f(T& param)
+
+f(int x)        => T is int, param is int&
+f(const int x)  => T is const int, param is const int&
+f(const int& x) => T is const int, param is const int& 
+                   Ignore reference in input expr
+                   
+                   slight Change
+
+template<typename T>
+void f(const T& param)     
+
+f(int x)        => T is int, param is const int&
+f(const int x)  => T is int, param is const int&
+f(const int& x) => T is int, param is const int& 
+                   Ignore reference in input expr     
+=> Here there is no need to deduce const as part of T
+because param has const in it. Look how the form of param
+is impacting the type deduced for T.
+
+With pointer it is the same as references
+template<typename T>
+void f(T* param)
+
+f(int* x)        => T is int, param is int*
+f(const int* x)  => T is const int, param is const int*
+
+When passing to refernce or pointer, constantness of input has to be preserved.
+i.e. it becomes a part of type deduced. Note the referenceness of input expr is
+ignored.
+===============================================
+
+Case 2: ParamType is Universal Reference
+
+Case 3: ParamType is neither a Pointer nor a Reference
+=> Dealing with pass-by-value
+
+template<typename T>
+void f(T param)
+=> param will be a copy of whatever is passed in--a completely new object.
+
+f(int x)        => T is int, param is int
+f(const int x)  => T is int, param is int
+f(const int& x) => T is int, param is int
+=> Ignore const, reference, volatile on param since param will be a copy
+=> Even a pointer is passed by value. The constness of pointer itself is
+ignored but constness of what it points to is preserved. In
+const char* const ptr -> the second const is ignored.
+===============================================
+
+Array decays to pointers 
+Functions can't declare parameters that are truly arryas. But
+they can declare parameters that are references to arrays.
+
+template<typename T>
+void f(T& param)
+
+Here if we pass array, the type deduced for T is actual type of array!
+That includes the size of the array. So T is const char [13] and f's param
+is a reference to this array - const char (&)[13]
+
+                            
