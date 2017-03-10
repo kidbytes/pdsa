@@ -84,6 +84,125 @@ void f(T& param)
 
 Here if we pass array, the type deduced for T is actual type of array!
 That includes the size of the array. So T is const char [13] and f's param
-is a reference to this array - const char (&)[13]
+is a reference to this array - const char (&)[13]`
 
-                            
+The ability to declare references to arrays enables us to deduce the number                             
+of elements
+template<typename T, std::size_t N>
+constexpr std::size_t arraySize f(T (&)[N] )
+{
+ //return the size of the array as a compile time constant
+}
+declaring a func constexpr makes its result available during compilation.
+int keyVals[] = {1,3,4,6};
+int mv[arraySize(keyVals)];
+
+Function types also decay into function pointers.
+void(int, double) decays into void (*)(int, double).
+Note - a reference to function would be (&)(int, double)
+===============================================
+
+auto type deduction
+There is a direct mapping between template type deduction and auto type deduction.
+There is literally an algorithmic transformation from one to the other.
+
+auto plays the role of T in the template and the type specifier for the variable
+acts as ParamType.
+
+auto x=27; uses
+template<typename T>
+void func_for_x(T param)
+
+const auto cx = x; uses
+template<typename T>
+void func_for_x(const T param)
+
+const auto& cx = x; uses
+template<typename T>
+void func_for_x(const T& param)
+
+Compilers act as if there were a template for each declaration.
+With one exception deducing types for auto is the same as deducing types for templates.
+
+const char name[] = "abc def"
+auto a1 = name; //a1 is const char*
+auto& a2 = name; //a2 is const char (&)[13]
+===============================================
+
+auto type deduction and template type deduction differ for braced initializers 
+
+auto x = { 11, 23, 9 }; // The deduced type is std::initializer_list
+but if the same type is passed to 
+	template<typename T>
+	void f(T param);
+deduction fails
+
+The deduction would go fine with
+	template<typename T>
+	void f(std::initializer_list<T> initList);
+
+When auto is returned in a function, template type deduction is used and not auto
+===============================================
+
+decltype
+
+Given a name or expression, decltype tells you the
+name’s or the expression’s type without any modifications
+
+const int i = 0;           // decltype(i) is const int
+bool f(const Widget& w);   // decltype(w) is const Widget&
+                           // decltype(f) is bool(const Widget&)
+vector<int> v;             // decltype(v) is vector<int> 
+if (v[0] == 0) ...         // decltype(v[0]) is int&    
+
+The primary use for decltype is declaring function templates 
+where the function’s return type depends on its parameter types.     
+
+template<typename Container, typename Index> 
+auto authAndAccess(Container& c, Index i)
+  -> decltype(c[i])
+{
+  authenticateUser();
+  return c[i];
+}        
+
+Here auto only tells we are using trailing return type.
+With trailing return type we can use function parameters to specify return type.
+Forstd::vector<bool>, however, operator[] does not return a bool&. Instead, it 
+returns a brand new object. This is where decltype comes to rescue.
+===============================================
+
+auto
+
+template<typename It>
+void dwim(It b, It e)
+{
+  while (b != e) {
+	// for all elements in range from b to e
+	typename std::iterator_traits<It>::value_type currValue = *b;
+	                   or
+	auto currValue = *b;
+	} 
+}          
+
+auto x3 = 0;  //must have an initializer. Otherwise how would you deduce type
+
+std::unordered_map<std::string, int> m;
+for (const std::pair<std::string, int>& p : m) {..}
+
+In unodered map, each entry is std::pair <const std::string, int> and 
+not std::pair <std::string, int>. In the loop above a temp will be created
+with correct type and reference bound. The temp is destroyed for each item.
+Its very inefficient. You can instead use
+
+for (const auto& p : m)  {}
+Here there is no temp so if you take an address you actually point
+to an item in the map
+
+auto is not always applicable - esp when proxies are involved
+
+vector<bool>[3] actually returns an object of type vector<bool>::reference 
+This object has implicit converstion to bool so it can be used a bool.
+
+auto highPriority = features(w)[5];
+Here highPriority is of type reference - not what you may want
