@@ -206,3 +206,104 @@ This object has implicit converstion to bool so it can be used a bool.
 
 auto highPriority = features(w)[5];
 Here highPriority is of type reference - not what you may want
+===============================================
+
+MODERN C++
+
+UNIFORM INITIALIZATION (Braced Initialization is the syntactic construct)
+
+std::vector<int> v{ 1, 3, 5 }; // v's initial content is 1, 3, 5
+
+int z(0); is error but std::atomic<int> ai2(0); works
+int y = 0; works but std::atomic<int> ai3 = 0; is error
+
+However, braced initialization works every where
+std::atomic<int> ai1{ 0 }; and int x{ 0 }; both work
+
+Widget w3{}; // calls Widget ctor with no args
+
+If a constructor taking initializer list is used it takes precendence.
+Conversions are made to make an attempt to use the initializer list.
+
+Widget w1(10, true) or w1{10, true} call the same ctr() as long as a ctr()
+is not defined taking initializer list. If one is defined, second call would
+call the new ctr. Even if a better matching ctr is found the one with 
+initializer list is preferred and the compiler does conversions like bool
+to double.
+
+===============================================
+Prefer nullptr to 0 and NULL. NULL could be defined as long, int,.. based on compiler
+
+0 can be treated as NULL in legacy.
+
+// three overloads of f
+void f(int);
+void f(bool);
+void f(void*);
+f(0);      // calls f(int), not f(void*)
+f(NULL);   // might not compile, but typically calls
+           // f(int). Never calls f(void*)
+If NULL is defined to be, say, 0L (i.e., 0 as a long), the call is ambiguous, 
+because conversion from long to int, long to bool, and 0L to void* are considered 
+equally good.
+
+nullptr’s advantage is that it doesn’t have an integral type. 
+f(nullptr);         // calls f(void*) overload
+
+auto result = findRecord( /* arguments */ );
+if (result == 0) {
+  // result could be pointer type or integral type
+}
+
+if (result == nullptr) {
+  // result must be a pointer type
+}
+
+
+===============================================
+Prefer alias declarations to typedefs.
+
+typedef
+     std::unique_ptr<std::unordered_map<std::string, std::string>>
+     UPtrMapSS;
+
+using UPtrMapSS =
+     std::unique_ptr<std::unordered_map<std::string, std::string>>;
+
+
+typedef void (*FP)(int, const std::string&);
+using FP = void (*)(int, const std::string&);
+===============================================
+Prefer scoped enums to unscoped enums.
+enum Color { black, white, red };
+auto white = false; // error! white already 
+                    // declared in this scope
+                    
+enum class Color { black, white, red }; // black, white, red 
+                                        // are scoped to Color   
+                                        
+auto white = false; // works now. Uses global white
+Color c = Color::white;
+auto c = Color::white;
+
+Old enums have to be declared in header file. They have
+to defined with values. There is no seperate declaration and then defintion.                                                         
+So, if you add a new enum, recompiles the whole code.
+
+enum class Status;                   // forward declaration of new type
+
+
+enum class Status: std::uint32_t { good = 0, failed = 1}
+--> Changed the underlying type from default int to unint32_t
+
+===============================================
+===============================================
+===============================================
+===============================================
+===============================================
+===============================================
+===============================================
+===============================================
+
+
+
