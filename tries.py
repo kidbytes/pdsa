@@ -1,6 +1,7 @@
 # Used for symbol table implementation / efficient spell checking
 # Existing solutions like Red Black Trees and Hash tables work on the entire length
 # of the string and are logN.  Tries work only on logN characters.
+from distutils.sysconfig import PREFIX
 
 
 # Red Black Trees and Hash tables are original work horses. Can we do better?
@@ -93,7 +94,18 @@ def auto_complete(nd, prefix, out):
 # pointers as we are descending
 
 
-# Iterating a R-way Trie i.e. print all keys
+# Iterating a R-way Trie i.e. print all keys using DFS
+void print_keys(Node* nd, const string& prefix)  //Initial prefix is ""
+{
+    if (nd->value)
+        print prefix
+        
+    for(int i=0 ; i < nd->links.size(); i++) 
+    {
+        if (nd->links[i])
+            print_keys(nd, prefix + itoa('a' + i))
+    }
+}
 def print_keys(nd, que):
     
     
