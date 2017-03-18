@@ -339,6 +339,9 @@ Small mistakes will lead to overloading a function and not overriding.
 virtual void mf1() override;
 
 If the function doesn't override anything in base class we get compiler error.
+
+virtual void mf1() override final; 
+--> Override here but prevent further overriding
 ===============================================
 
 int f(int x) throw(); // no exceptions from f: C++98 style
@@ -361,7 +364,27 @@ functions are involved. Such functions produce compile-time constants when they
 are called with compile-time constants. If they’re called with values not known until
 runtime, they produce runtime values.
 ===============================================
+
+unique_ptr: should be used when ownership of a memory resource does not have to be 
+shared (it doesn't have a copy constructor), but it can be transferred to another 
+unique_ptr (move constructor exists).
+
+shared_ptr: should be used when ownership of a memory resource should be shared 
+(hence the name).
+
+weak_ptr: holds a reference to an object managed by a shared_ptr, but does not contribute
+to the reference count; it is used to break dependency cycles (think of a tree where 
+the parent holds an owning reference (shared_ptr) to its children, but the children 
+also must hold a reference to the parent; if this second reference was also an owning 
+one, a cycle would be created and no object would ever be released).
+
+On the other hand the auto_ptr is obsolete and should no longer be used.
 ===============================================
+
+non-member begin() and end()
+They are also overloadable - example C like arrays
+std::find_if(std::begin(arr), std::end(arr), is_odd);
+
 ===============================================
 ===============================================
 
