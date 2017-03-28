@@ -650,6 +650,137 @@ Instead you could create a new compare class:
 	}
 
 	
+	
+######################
+# I/O Streams        #
+######################	
+Stream is "Stream of data" where characters are flowing.	
+Output is treated as data flowing into stream; input is data flowing out of stream.
+A stream is manifested as a object with properties.
+
+
+				ios_base                      basic_streambuf<>
+				
+	            basic_ios
+	            
+	basic_istream<>     basic_ostream<>
+	   
+	           basic_iostream<>         
+
+
+class istream --> Used to read data
+class ostream --> Used to write data
+
+They are instantiations of basic_istream<> and basic_ostream<> using char as
+character type.
+
+Global Stream Objects
+cin  --> Connected to keyboard by OS
+cout --> Connected to monitor by OS
+cerr --> Connected to monitor. Used for all error messages.
+         cerr is not buffered. 
+clog --> Same as error but buffered.         
+Seperation of normal output and error messages makes it possible to treat them
+differently. One can go to a file and the other to a console.        
+
+Operators >> for input and << for output are overloaded for stream classes.
+
+Manipulators manipulate a stream. They only change the way input is interpreted or 
+output formatted. They don't create or consume data.
+
+std::endl -> outputs a newline and flushes the output buffer.
+std::ends -> outputs '\0'
+flush     -> flushes out put buffer
+ws        -> on istream. Reads and discards whitespaces
+
+
+ios_base  -> defines properties for all stream classes independent of char type and traits.         
+basic_ios -> Properties that depend on char type and traits. Also includes buffer used by the stream.
+
+basic_streambuf -> is the heart of iostream library.
+Defines the interface to all representations that can be written to or read from the streams.
+They supply character buffers for reading and writing characters. They also synchronize I/O
+when doing parallel I/O on the same external representation.
+
+To define access to new storage device, you derive new stream buffer class from 
+basic_streambuf<> and define functions for reading and/or writing characters
+for this new external representation. Formatted I/O is automatically available 
+if a stream is initialized with this new buffer class.
+
+basic_ios<> is parameterized with charT and traits. traits is defaulted to char_traits<charT>.
+template <class T, class traits=char_traits<charT>>
+class basic_ios;
+
+character to use for end-of-file is an example trait.
+basic_ios, basic_streambuf, basic_istream, basic_ostream and basic_iostream all have the
+same params.
+
+typedef basic_istream<char> istream
+typedef basic_ostream<char> ostream
+typedef basic_iostream<char> iostream
+
+C++ provides specializations of char_traits for char and wchar_t
+
+Boolean values are read and printed numerically: false is converted to and from 0 and true is 1.
+Any other value sets ios::failbit to 1.
+
+when char or wchar_t is read using >>, leading whitespace is skipped.
+
+A C-string is read word wise. Leading white space is skipped and read till another 
+white space or eof is encountered.
+
+char buffer[81];
+cin >> std::setw(81) >> buffer;  //Limits the length to 80
+
+State of Streams:
+goodbit -> Everything is ok. None of the other bits are set.
+eofbit  -> End-of-file was encountered
+failbit -> Error; an I/O operation was not successful. Stream is generally ok.
+           Example reading int when expecting a letter.
+badbit  -> fatal error; undefined state.
+           Example stream is corrupted or data is lost.
+           
+When reading past the last character both eofbit and failbit are set.           
+
+You can use member functions to read these bits
+good(), eof(), fail(), bad()
+clear() --> clear all flags
+fail() actually checks both fail and bad bits.
+
+Stream state and Boolean conditions:
+
+while (std::cin) { }
+calls operator void* (). Returns whether the stream has not run into an error.
+corresponds to !fail()
+
+while (std::cin >> obj) {}
+Since the stream operation returns a stream again, we can use as above.
+
+if (!std::cin) { }
+calls operator !(). Returns whether stream has run into an error. 
+corresponds to : if (fail() || bad())
+
+if (! (std::cin >> x)) { } --> Have to use parentheses due to operator precedence.
+
+
+Standard Input/Output Functions:
+
+Looks like a bitset is used for all the bits>
+If the value of this bitset is 0, it means goodbit is set. Therefore the value of goodbit is 0.
+
+
+
+
+
+Classes derived from basic_ios only handle formatting of the data
+The actual reading and writing is done by the stream buffers maintained by basic_ios objects.
+
+
+
+
+
+
+
 ######################
 # RECURSIVE          #
 ######################
