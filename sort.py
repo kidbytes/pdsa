@@ -1,5 +1,12 @@
 import util
+Hi Ram,
+How is every one? Couldn't catch up with you last year. This time I will make sure we will come to Bangalore.
 
+I have a question for you. I'm exploring the option of finding a good residential school in Bangalore for Arnav. Currently he is in 7th grade.
+
+Just a thought at the moment but I'm interested in finding out more. One of my friends pointed us to 'Canadian International School' and 
+'Stonehill International School'.  Are you familiar with them? What is  your opinion in general about these international schools.
+I'm debating between the schools here and international schools back in India.
 #-------------------------
 # SELECTION SORT
 #-------------------------
