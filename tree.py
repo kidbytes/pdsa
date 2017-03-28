@@ -415,10 +415,9 @@ class BST:
         elif (pos < lsize + 1):
             return self._select(nd.left, pos) 
         else:
-            if (nd.right):
-                return self._select(nd.right, pos - (lsize + 1))
+            return self._select(nd.right, pos - (lsize + 1))
         
-        return None
+
     
     def _rank(self, nd, data):
         if (nd is None):

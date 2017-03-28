@@ -16,7 +16,7 @@
 # d 2   d->6
 # e 1   e->8
 # f 3   f->9
-
+                           
 # Consider a mapping of student name to section number
 # Since the section numbers are small and limited, we
 # can use section number as an index into an array and

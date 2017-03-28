@@ -233,7 +233,7 @@ not be equal at bit level.
 
 * The definition of same in assoc containers is equivalence. Equivalence is 
 based on sort order defined for the container. Two values are equivalent if 
-neither precedes the other in sort order. The default sortorder for a set 
+neither precedes the other in sort order. The default sort order for a set 
 is less<T> which by default calls operator <. 
 
 * Actually, every assoc container takes in a predicate as sorting criteria,
@@ -242,7 +242,7 @@ So by default, key_comp() returns less<T> which calls operator <.
 
 * If you define a case insensitive sorting criteria for a set, and insert
 apple and Apple in order, Apple will not be inserted. set.find('aPpLe') would 
-return an iterator the element. But, algorithm find() will not because it uses
+return an iterator for the item. But, algorithm find() will not because it uses
 operator== which is case sensitive unless it is overridden.
 
 * Assoc containers use the same equivalence for both inserting and finding.
@@ -649,81 +649,138 @@ Instead you could create a new compare class:
 			}
 	}
 
-
-
-
-
-
-THREADS:
-* A process state can be defined to contain:
-Environment, Working Dir, Program Instructions, Registers, Stack, Heap
-File Descriptors, Signal actions, Shared Libraries, IPC tools (message queues, pipes..)
-
-To have independent flow of control, a thread maintains its own:
-Stack Pointer, Registers, Thread Specific Data, Scheduling Properties,
-Set of pending and blocked signals. 
-
-* pthread_self() returns the unique, system assigned thread ID of the calling thread.
-
-* A thread duplicates only the essential resources it needs to be independently
-schedulable.
-
-* Common threading models:
-1. Manager/Worker: RequestProcessor, ThreadPool
-2. Pipeline: Each thread working on a different section of data
-3. Peer: Similar to 1 but Manager also works
-
-* Sobroutines in Pthreads API can be grouped into:
-1. Thread Management
-2. Mutexes for code mutual exclusion
-3. Condition Variables: Address communication between threads that share a Mutex
-4. Thread Synchronization: Read/Write locks and barriers
-
-* Pthreads has API to specify how threads are scheduled for execution. For example:
-FIFO, RR or other. There is no routine to bind threads to cpus/cores.
-
-* main() should explicitly call pthread_exit() as the last thing. It will block
-for the threads. Otherwise all the threads will terminate because main process
-exits.
-
-* pthread_join(threadid, status) --> blocks calling thread until specified threadid
-terminates. If specified thread called pthread_exit() with status, it will be stored
-in status of pthread_join. One of the attributes of a thread defines whether the thread
-is joinable or detached. Only joinable threads can be joined.
-
-* pthread_detach() is used to convert a joinable thread to detachable. There is no
-converse routine.
-
-* Changing the default stack size: pthread_attr_setstacksize(..)
-
-MUTEX:
-* Thread Synchronization and protecting shared data when multiple writes occur.
-There is ownership to a mutex. Only one thread can own it at a time.
-
-* You can use trylock to make an unblocking call to lock a mutex.
-
-CONDITION VARIABLES:
-* Mutexes implement synchronization by controlling thread access to data. Condition
-variables allow threads to synchronize based upon the actual value of data. Without
-condition variables, we have to use continuous polling (possibly in a critical section),
-to check if the condition is met.
-
-//Checking
-	mutex.lock();
-	while (false == predicate()) {         
-	    condition.wait(&mutex);  //mutex will be unlocked automatically
-	}
-	
-	..
-	mutex.unlock();
-
-
-//Setting
-	mutex.lock();
-	setPredicateTrue();
-	muntex.unlock();
 	
 	
+######################
+# I/O Streams        #
+######################	
+Stream is "Stream of data" where characters are flowing.	
+Output is treated as data flowing into stream; input is data flowing out of stream.
+A stream is manifested as a object with properties.
+
+
+				ios_base                      basic_streambuf<>
+				
+	            basic_ios
+	            
+	basic_istream<>     basic_ostream<>
+	   
+	           basic_iostream<>         
+
+
+class istream --> Used to read data
+class ostream --> Used to write data
+
+They are instantiations of basic_istream<> and basic_ostream<> using char as
+character type.
+
+Global Stream Objects
+cin  --> Connected to keyboard by OS
+cout --> Connected to monitor by OS
+cerr --> Connected to monitor. Used for all error messages.
+         cerr is not buffered. 
+clog --> Same as error but buffered.         
+Seperation of normal output and error messages makes it possible to treat them
+differently. One can go to a file and the other to a console.        
+
+Operators >> for input and << for output are overloaded for stream classes.
+
+Manipulators manipulate a stream. They only change the way input is interpreted or 
+output formatted. They don't create or consume data.
+
+std::endl -> outputs a newline and flushes the output buffer.
+std::ends -> outputs '\0'
+flush     -> flushes out put buffer
+ws        -> on istream. Reads and discards whitespaces
+
+
+ios_base  -> defines properties for all stream classes independent of char type and traits.         
+basic_ios -> Properties that depend on char type and traits. Also includes buffer used by the stream.
+
+basic_streambuf -> is the heart of iostream library.
+Defines the interface to all representations that can be written to or read from the streams.
+They supply character buffers for reading and writing characters. They also synchronize I/O
+when doing parallel I/O on the same external representation.
+
+To define access to new storage device, you derive new stream buffer class from 
+basic_streambuf<> and define functions for reading and/or writing characters
+for this new external representation. Formatted I/O is automatically available 
+if a stream is initialized with this new buffer class.
+
+basic_ios<> is parameterized with charT and traits. traits is defaulted to char_traits<charT>.
+template <class T, class traits=char_traits<charT>>
+class basic_ios;
+
+character to use for end-of-file is an example trait.
+basic_ios, basic_streambuf, basic_istream, basic_ostream and basic_iostream all have the
+same params.
+
+typedef basic_istream<char> istream
+typedef basic_ostream<char> ostream
+typedef basic_iostream<char> iostream
+
+C++ provides specializations of char_traits for char and wchar_t
+
+Boolean values are read and printed numerically: false is converted to and from 0 and true is 1.
+Any other value sets ios::failbit to 1.
+
+when char or wchar_t is read using >>, leading whitespace is skipped.
+
+A C-string is read word wise. Leading white space is skipped and read till another 
+white space or eof is encountered.
+
+char buffer[81];
+cin >> std::setw(81) >> buffer;  //Limits the length to 80
+
+State of Streams:
+goodbit -> Everything is ok. None of the other bits are set.
+eofbit  -> End-of-file was encountered
+failbit -> Error; an I/O operation was not successful. Stream is generally ok.
+           Example reading int when expecting a letter.
+badbit  -> fatal error; undefined state.
+           Example stream is corrupted or data is lost.
+           
+When reading past the last character both eofbit and failbit are set.           
+
+You can use member functions to read these bits
+good(), eof(), fail(), bad()
+clear() --> clear all flags
+fail() actually checks both fail and bad bits.
+
+Stream state and Boolean conditions:
+
+while (std::cin) { }
+calls operator void* (). Returns whether the stream has not run into an error.
+corresponds to !fail()
+
+while (std::cin >> obj) {}
+Since the stream operation returns a stream again, we can use as above.
+
+if (!std::cin) { }
+calls operator !(). Returns whether stream has run into an error. 
+corresponds to : if (fail() || bad())
+
+if (! (std::cin >> x)) { } --> Have to use parentheses due to operator precedence.
+
+
+Standard Input/Output Functions:
+
+Looks like a bitset is used for all the bits>
+If the value of this bitset is 0, it means goodbit is set. Therefore the value of goodbit is 0.
+
+
+
+
+
+Classes derived from basic_ios only handle formatting of the data
+The actual reading and writing is done by the stream buffers maintained by basic_ios objects.
+
+
+
+
+
+
+
 ######################
 # RECURSIVE          #
 ######################

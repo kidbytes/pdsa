@@ -1,0 +1,158 @@
+
+O(n)     upper bound or worst case
+sigma(n) lower bound or best case
+theta(n) tight bound or exact case
+
+An alogithm can have a best case and worst case based on the input.
+For the average case we need to know the probability of distribution of input.
+If the input comes completely random then average case is close to worst case.
+Example for insertion number of comparisons is 1+2+3+4+...
+
+Insertion sort has best case n and worst case of n^2 complexity.
+We can say this has a complexity of O(n^2) but we can't say theta(n^2).
+O() is an upper bound and n^2 can bound n. Whereas theta is tighter bound.
+Both best and worst case have to be same to use theta.
+
+/*
+ * Given a Master LinkedList of objects in a random order, and a Sub LinkedList of objects (a list containing only
+ * elements in the Master list, but not necessary all elements) in a random order, return the Sub LinkedList in the
+ * order the elements appear in the Master LinkedList.
+ *
+ * Ex. When passed the following Master and Sub lists
+ *   Master: "blue" -> "yellow" -> "red" -> "green" -> "purple" -> "white" -> "black"
+ *   Sub:    "purple" -> "green" -> "blue" -> "red"
+ *     The algorithm would return:
+ *   Return: "blue" -> "red" -> "green" -> "purple"
+ */
+public static LinkedList<T> orderSubList(LinkedList<T> master, LinkedList<T> sub){
+
+}
+
+
+
+template<class T>
+void printSubInOrder(const list<T>& master, const list<T>& sub, list<T>& out)
+{
+
+    //Copy sub to a hash map
+    unordered_set<T> uSub(sub.begin(), sub.end());
+    
+    list<T>::const_iterator it = master.begin();
+    while (it != master.end())
+    {
+       if (find(uSub, *it) != uSub.end())
+          out.append(*it);
+       
+       it++;
+    }
+    
+    return;
+}
+    
+
+/*
+
+
+subList = {}
+for item in Sub:
+    subList.append(item)
+    
+for item in Master:
+    if item in subList:
+        print item
+        
+   
+   
+        
+From Master:
+
+sorted master list:
+blue -> 1
+yellow -> 2
+red -> 3
+
+B
+Build a stl set of SubList
+
+
+
+
+O(n)
+
+purple is 5 ==> 
+struct ColorIndex {
+    string color;
+    int index;
+    };
+    
+operator < (ColorIndex& one, ColorIndex& two) {
+    return one.index < two.index
+}
+    
+list.push(col1)
+list.push(col2)
+nlogn()
+
+
+
+list.sort()
+    
+        
+
+*/
+
+
+
+
+
+/*
+ * Given a string containing brackets of different kinds, return true or false based on whether the brackets are 
+ * properly balanced without overlap.
+ * 
+ * Ex.
+ *   "{[()]}" returns true  
+ *   "{{[)]}}" returns false
+ *   "{([})]" returns false
+ *   "()()[]{}" return true
+ *   "(" returns false
+ */
+ 
+ 
+ ( -> )
+ { -> }
+ [ -> ]
+ 
+ string left = "([{";
+ string right = ")]}";
+ map<char, char> braceMap;
+ 
+ braceMap['{'] = '}';
+ braceMap['('] = ')';
+ braceMap['['] = ']';
+ 
+ string input;
+ deque<char> stk;
+ 
+ if (input.length % 2)
+   return false;
+   
+ for (size_t ii=0; ii < input.length() ii++)
+ {
+     if (left.find(s[ii]){
+       stk.push_back(s[ii]);
+     }
+     else {
+       char leftBrace = stk.pop_back();
+       char rightBrace = braceMap[leftBrace];
+       if (rightBrace != s[ii])
+         return false;
+     }
+ }
+ 
+ if (stk.size() > 0)
+   return false;
+ else
+   return true;
+ 
+
+ 

@@ -1,0 +1,88 @@
+
+THREADS:
+* A process state can be defined to contain:
+Environment, Working Dir, Program Instructions, Registers, Stack, Heap
+File Descriptors, Signal actions, Shared Libraries, IPC tools (message queues, pipes..)
+
+To have independent flow of control, a thread maintains its own:
+Stack Pointer, Registers, Thread Specific Data, Scheduling Properties,
+Set of pending and blocked signals. 
+
+* pthread_self() returns the unique, system assigned thread ID of the calling thread.
+
+* A thread duplicates only the essential resources it needs to be independently
+schedulable.
+
+* Common threading models:
+1. Manager/Worker: RequestProcessor, ThreadPool
+2. Pipeline: Each thread working on a different section of data
+3. Peer: Similar to 1 but Manager also works
+
+* Sobroutines in Pthreads API can be grouped into:
+1. Thread Management
+2. Mutexes for code mutual exclusion
+3. Condition Variables: Address communication between threads that share a Mutex
+4. Thread Synchronization: Read/Write locks and barriers
+
+* Pthreads has API to specify how threads are scheduled for execution. For example:
+FIFO, RR or other. There is no routine to bind threads to cpus/cores.
+
+* main() should explicitly call pthread_exit() as the last thing. It will block
+for the threads. Otherwise all the threads will terminate because main process
+exits.
+
+* pthread_join(threadid, status) --> blocks calling thread until specified threadid
+terminates. If specified thread called pthread_exit() with status, it will be stored
+in status of pthread_join. One of the attributes of a thread defines whether the thread
+is joinable or detached. Only joinable threads can be joined.
+
+* pthread_detach() is used to convert a joinable thread to detachable. There is no
+converse routine.
+
+* Changing the default stack size: pthread_attr_setstacksize(..)
+
+MUTEX:
+* Thread Synchronization and protecting shared data when multiple writes occur.
+There is ownership to a mutex. Only one thread can own it at a time.
+
+* You can use trylock to make an unblocking call to lock a mutex.
+
+CONDITION VARIABLES:
+* Mutexes implement synchronization by controlling thread access to data. Condition
+variables allow threads to synchronize based upon the actual value of data. Without
+condition variables, we have to use continuous polling (possibly in a critical section),
+to check if the condition is met.
+
+//Checking
+	mutex.lock();
+	while (false == predicate()) {         
+	    condition.wait(&mutex);  //mutex will be unlocked automatically
+	}
+	
+	..
+	mutex.unlock();
+
+
+//Setting
+	mutex.lock();
+	setPredicateTrue();
+	muntex.unlock();
+	
+	
+	
+SINGLE WRITER / MULTIPLE READER
+
+WRITER:
+We can write if the following are true:
+	1. No other Writer
+	2. No Reader
+	
+READER:
+	1. No Writer
+	
+A writer needs exclusive access so we can use mutex	
+Need a condition variable for readers
+
+
+def write():
+	hMutexWriter.lock()

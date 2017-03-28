@@ -1,0 +1,392 @@
+* Function template
+template<typename T>
+void f(ParamType param)
+
+f(expr)
+Compilers use expr to deduce 2 types: 
+-> one for T
+-> one for ParamType.
+They can be different because ParamType can contain const, reference, etc qualifiers.
+Ex:
+template<typename T>
+void f(const T& param)
+
+int x=0;
+f(x) => T is deduced to be int, but ParamType is const int&
+===============================================
+
+* The type deduced for T is dependent on
+-> type of expr
+-> form of ParamType
+===============================================
+
+* Three cases based on form of ParamType
+Case 1. ParamType is a Reference or Pointer. 
+if expr is reference, ignore it.
+
+template<typename T>
+void f(T& param)
+
+f(int x)        => T is int, param is int&
+f(const int x)  => T is const int, param is const int&
+f(const int& x) => T is const int, param is const int& 
+                   Ignore reference in input expr
+                   
+                   slight Change
+
+template<typename T>
+void f(const T& param)     
+
+f(int x)        => T is int, param is const int&
+f(const int x)  => T is int, param is const int&
+f(const int& x) => T is int, param is const int& 
+                   Ignore reference in input expr     
+=> Here there is no need to deduce const as part of T
+because param has const in it. Look how the form of param
+is impacting the type deduced for T.
+
+With pointer it is the same as references
+template<typename T>
+void f(T* param)
+
+f(int* x)        => T is int, param is int*
+f(const int* x)  => T is const int, param is const int*
+
+When passing to refernce or pointer, constantness of input has to be preserved.
+i.e. it becomes a part of type deduced. Note the referenceness of input expr is
+ignored.
+===============================================
+
+Case 2: ParamType is Universal Reference
+
+Case 3: ParamType is neither a Pointer nor a Reference
+=> Dealing with pass-by-value
+
+template<typename T>
+void f(T param)
+=> param will be a copy of whatever is passed in--a completely new object.
+
+f(int x)        => T is int, param is int
+f(const int x)  => T is int, param is int
+f(const int& x) => T is int, param is int
+=> Ignore const, reference, volatile on param since param will be a copy
+=> Even a pointer is passed by value. The constness of pointer itself is
+ignored but constness of what it points to is preserved. In
+const char* const ptr -> the second const is ignored.
+===============================================
+
+Array decays to pointers 
+Functions can't declare parameters that are truly arryas. But
+they can declare parameters that are references to arrays.
+
+template<typename T>
+void f(T& param)
+
+Here if we pass array, the type deduced for T is actual type of array!
+That includes the size of the array. So T is const char [13] and f's param
+is a reference to this array - const char (&)[13]`
+
+The ability to declare references to arrays enables us to deduce the number                             
+of elements
+template<typename T, std::size_t N>
+constexpr std::size_t arraySize f(T (&)[N] )
+{
+ //return the size of the array as a compile time constant
+}
+declaring a func constexpr makes its result available during compilation.
+int keyVals[] = {1,3,4,6};
+int mv[arraySize(keyVals)];
+
+Function types also decay into function pointers.
+void(int, double) decays into void (*)(int, double).
+Note - a reference to function would be (&)(int, double)
+===============================================
+
+auto type deduction
+There is a direct mapping between template type deduction and auto type deduction.
+There is literally an algorithmic transformation from one to the other.
+
+auto plays the role of T in the template and the type specifier for the variable
+acts as ParamType.
+
+auto x=27; uses
+template<typename T>
+void func_for_x(T param)
+
+const auto cx = x; uses
+template<typename T>
+void func_for_x(const T param)
+
+const auto& cx = x; uses
+template<typename T>
+void func_for_x(const T& param)
+
+Compilers act as if there were a template for each declaration.
+With one exception deducing types for auto is the same as deducing types for templates.
+
+const char name[] = "abc def"
+auto a1 = name; //a1 is const char*
+auto& a2 = name; //a2 is const char (&)[13]
+===============================================
+
+auto type deduction and template type deduction differ for braced initializers 
+
+auto x = { 11, 23, 9 }; // The deduced type is std::initializer_list
+but if the same type is passed to 
+	template<typename T>
+	void f(T param);
+deduction fails
+
+The deduction would go fine with
+	template<typename T>
+	void f(std::initializer_list<T> initList);
+
+When auto is returned in a function, template type deduction is used and not auto
+===============================================
+
+decltype
+
+Given a name or expression, decltype tells you the
+name’s or the expression’s type without any modifications
+
+const int i = 0;           // decltype(i) is const int
+bool f(const Widget& w);   // decltype(w) is const Widget&
+                           // decltype(f) is bool(const Widget&)
+vector<int> v;             // decltype(v) is vector<int> 
+if (v[0] == 0) ...         // decltype(v[0]) is int&    
+
+The primary use for decltype is declaring function templates 
+where the function’s return type depends on its parameter types.     
+
+template<typename Container, typename Index> 
+auto authAndAccess(Container& c, Index i)
+  -> decltype(c[i])
+{
+  authenticateUser();
+  return c[i];
+}        
+
+Here auto only tells we are using trailing return type.
+With trailing return type we can use function parameters to specify return type.
+Forstd::vector<bool>, however, operator[] does not return a bool&. Instead, it 
+returns a brand new object. This is where decltype comes to rescue.
+===============================================
+
+auto
+
+template<typename It>
+void dwim(It b, It e)
+{
+  while (b != e) {
+	// for all elements in range from b to e
+	typename std::iterator_traits<It>::value_type currValue = *b;
+	                   or
+	auto currValue = *b;
+	} 
+}          
+
+auto x3 = 0;  //must have an initializer. Otherwise how would you deduce type
+
+std::unordered_map<std::string, int> m;
+for (const std::pair<std::string, int>& p : m) {..}
+
+In unodered map, each entry is std::pair <const std::string, int> and 
+not std::pair <std::string, int>. In the loop above a temp will be created
+with correct type and reference bound. The temp is destroyed for each item.
+Its very inefficient. You can instead use
+
+for (const auto& p : m)  {}
+Here there is no temp so if you take an address you actually point
+to an item in the map
+
+auto is not always applicable - esp when proxies are involved
+
+vector<bool>[3] actually returns an object of type vector<bool>::reference 
+This object has implicit converstion to bool so it can be used a bool.
+
+auto highPriority = features(w)[5];
+Here highPriority is of type reference - not what you may want
+===============================================
+
+MODERN C++
+
+UNIFORM INITIALIZATION (Braced Initialization is the syntactic construct)
+
+std::vector<int> v{ 1, 3, 5 }; // v's initial content is 1, 3, 5
+
+int z(0); is error but std::atomic<int> ai2(0); works
+int y = 0; works but std::atomic<int> ai3 = 0; is error
+
+However, braced initialization works every where
+std::atomic<int> ai1{ 0 }; and int x{ 0 }; both work
+
+Widget w3{}; // calls Widget ctor with no args
+
+If a constructor taking initializer list is used it takes precendence.
+Conversions are made to make an attempt to use the initializer list.
+
+Widget w1(10, true) or w1{10, true} call the same ctr() as long as a ctr()
+is not defined taking initializer list. If one is defined, second call would
+call the new ctr. Even if a better matching ctr is found the one with 
+initializer list is preferred and the compiler does conversions like bool
+to double.
+
+===============================================
+Prefer nullptr to 0 and NULL. NULL could be defined as long, int,.. based on compiler
+
+0 can be treated as NULL in legacy.
+
+// three overloads of f
+void f(int);
+void f(bool);
+void f(void*);
+f(0);      // calls f(int), not f(void*)
+f(NULL);   // might not compile, but typically calls
+           // f(int). Never calls f(void*)
+If NULL is defined to be, say, 0L (i.e., 0 as a long), the call is ambiguous, 
+because conversion from long to int, long to bool, and 0L to void* are considered 
+equally good.
+
+nullptr’s advantage is that it doesn’t have an integral type. 
+f(nullptr);         // calls f(void*) overload
+
+auto result = findRecord( /* arguments */ );
+if (result == 0) {
+  // result could be pointer type or integral type
+}
+
+if (result == nullptr) {
+  // result must be a pointer type
+}
+
+
+===============================================
+Prefer alias declarations to typedefs.
+
+typedef
+     std::unique_ptr<std::unordered_map<std::string, std::string>>
+     UPtrMapSS;
+
+using UPtrMapSS =
+     std::unique_ptr<std::unordered_map<std::string, std::string>>;
+
+
+typedef void (*FP)(int, const std::string&);
+using FP = void (*)(int, const std::string&);
+===============================================
+Prefer scoped enums to unscoped enums.
+enum Color { black, white, red };
+auto white = false; // error! white already 
+                    // declared in this scope
+                    
+enum class Color { black, white, red }; // black, white, red 
+                                        // are scoped to Color   
+                                        
+auto white = false; // works now. Uses global white
+Color c = Color::white;
+auto c = Color::white;
+
+Old enums have to be declared in header file. They have
+to defined with values. There is no seperate declaration and then defintion.                                                         
+So, if you add a new enum, recompiles the whole code.
+
+enum class Status;                   // forward declaration of new type
+
+
+enum class Status: std::uint32_t { good = 0, failed = 1}
+--> Changed the underlying type from default int to unint32_t
+
+enum classes are also strongly typed.
+===============================================
+
+Prefer deleted functions to private undefined
+ones.
+
+Copy ctr() and assignment operator are declared private
+and not defined to prevent clients from calling them.
+Since these are automatically generated by the compiler
+you follow this trick to suppress them.
+
+Private means clients can't call. No definition means even 
+member functions and friends can't call.
+
+public:  //declared public
+  basic_ios(const basic_ios& ) = delete;
+  basic_ios& operator=(const basic_ios&) = delete;
+
+Even non-member functions can be deleted.
+bool isLucky(int number); // original function
+bool isLucky(char) = delete; // reject chars
+bool isLucky(bool) = delete; // reject bools
+bool isLucky(double) = delete; // reject doubles and floats
+
+The above declarations make sure isLucky() is called only for true integers.
+No conversions can be applied.
+===============================================
+
+Declare overriding functions override.
+For overriding to occur, several requirements must be met:
+• The base class function must be virtual.
+• The base and derived function names must be identical (except in the case of
+destructors).
+• The parameter types of the base and derived functions must be identical.
+• The constness of the base and derived functions must be identical.
+• The return types and exception specifications of the base and derived functions
+must be compatible.
+
+Small mistakes will lead to overloading a function and not overriding.
+
+virtual void mf1() override;
+
+If the function doesn't override anything in base class we get compiler error.
+
+virtual void mf1() override final; 
+--> Override here but prevent further overriding
+===============================================
+
+int f(int x) throw(); // no exceptions from f: C++98 style
+int f(int x) noexcept; // no exceptions from f: C++11 style
+
+
+===============================================
+
+Conceptually, constexpr indicates a value that’s not only constant, it’s known during
+compilation.
+int sz;
+constexpr auto arraySize1 = sz; // error! sz's value not
+                                // known at compilation
+constexpr auto arraySize2 = 10; // fine,
+std::array<int, arraySize2> data2; // fine, arraySize2
+                                   // is constexpr
+
+Usage scenarios for constexpr objects become more interesting when constexpr
+functions are involved. Such functions produce compile-time constants when they
+are called with compile-time constants. If they’re called with values not known until
+runtime, they produce runtime values.
+===============================================
+
+unique_ptr: should be used when ownership of a memory resource does not have to be 
+shared (it doesn't have a copy constructor), but it can be transferred to another 
+unique_ptr (move constructor exists).
+
+shared_ptr: should be used when ownership of a memory resource should be shared 
+(hence the name).
+
+weak_ptr: holds a reference to an object managed by a shared_ptr, but does not contribute
+to the reference count; it is used to break dependency cycles (think of a tree where 
+the parent holds an owning reference (shared_ptr) to its children, but the children 
+also must hold a reference to the parent; if this second reference was also an owning 
+one, a cycle would be created and no object would ever be released).
+
+On the other hand the auto_ptr is obsolete and should no longer be used.
+===============================================
+
+non-member begin() and end()
+They are also overloadable - example C like arrays
+std::find_if(std::begin(arr), std::end(arr), is_odd);
+
+===============================================
+===============================================
+
+
+
