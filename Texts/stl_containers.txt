@@ -156,3 +156,79 @@ If the key already exists, item is not inserted and bool is set to false.
 Otherwise, it inserts a new element with that key and default value_type and returns a reference to it.
 
 * swap(): Same as set
+
+
+
+*** UNORDERED MAP
+Uses hashing to store key -> value
+The map has several buckets and each key hashes to a bucket.
+The map can be considered to be an array of buckets.
+A bucket is represented by an index in the map.
+Several keys can hash to a single bucket as in regular hashing.
+Constant complexity on average for retrieving keys. 
+Faster than stl::map but not efficient for range based queries.
+
+Container Properties:
+Associative: Elements are accessed by keys and not by position
+Unordered: Uses hash tables to fast access by key
+Map: Key -> value association
+Unique Keys: No two keys can be equivalent
+Allocator-aware: Uses allocator obj to dynamically handle storage needs
+
+Template Parameters:
+Key: Type of key aliased as unordered_map::key_type
+T:   Type of mapped value as unordered_map::mapped_type
+Hash: Unary function object that hashes a key to return size_t 
+      Default is hash<key>
+	  Aliased as unordered_map::hasher
+Pred: A binary predicate to determine if 2 keys are equivalent
+      No two keys in the map should return true technically.
+
+Iterator of this map points to an object of type pair<const Key, T> and this 
+is aliased as unordered_map::value_type
+it->first is the key
+it->second is the value
+
+
+Same methods as a stl:map with a few more.
+
+* bucket_count(): Return the number of buckets
+* bucket_size() : Number of keys that belong to this bucket.
+* bucket()      : Given a key returns the bucket (index) to which it belongs.
+* max_bucket_count(): System max. size_t type.
+
+* load_factor():  numElements / numBuckets i.e numElements per bucket
+                  Influences probability of collision. If the load factor
+				  increases beyond a certain threshold, numBuckets is increased
+				  
+
+* max_load_factor(): Get/Set threshold of load_factor. If this threshold is reached,
+                     rehashing is done. Default max_load_factor is 1 meaning
+					 numBuckets == numElements. Remember each bucket may
+					 contain more than one key. Even if all keys map to the
+					 same bucket the load factor still can be 1. It is just that
+					 other buckets are empty. 
+					 Default load factor can be less than 1 - more buckets than keys.
+
+
+* rehash(n): Sets the number of buckets to n or more. 
+             A rehash is the reconstruction of the hash table. All keys are 
+			 rearragned to new set of buckets. Rehashes are automatically
+			 performed when max_load_factor is surpassed.
+			 If n is lower than the current number of buckets it a no-op.
+     
+* reserve():
+
+* hash_function(): Get hash function
+* key_eq(): Get key equivalence predicate
+                 
+
+
+Proficiency in C++ including STL
+Deep understanding of object-oriented design, data structures and algorithms
+You can bring leadership and mentoring expertise
+Take responsibility for the full software development life-cycle
+You are familiar with the nuances of building high volume, high availability distributed systems
+architecture, processes, best practices and direction of this initiative to fulfill our vision
+Excellent understanding of algorithms, data structures, object-oriented design and multi-threading.
+Deep knowledge of Hadoop MapReduce, HBase, and other Hadoop ecosystem technological`
