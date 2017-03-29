@@ -732,7 +732,7 @@ white space or eof is encountered.
 char buffer[81];
 cin >> std::setw(81) >> buffer;  //Limits the length to 80
 
-State of Streams:
+State of Streams:  (All members of ios_base)
 goodbit -> Everything is ok. None of the other bits are set.
 eofbit  -> End-of-file was encountered
 failbit -> Error; an I/O operation was not successful. Stream is generally ok.
@@ -765,11 +765,10 @@ if (! (std::cin >> x)) { } --> Have to use parentheses due to operator precedenc
 
 Standard Input/Output Functions:
 
-Looks like a bitset is used for all the bits>
+Looks like a bitset is used for all the bits. But this is implementation detail.
+iostate is th e name of the variable for this bitset.
+
 If the value of this bitset is 0, it means goodbit is set. Therefore the value of goodbit is 0.
-
-
-
 
 
 Classes derived from basic_ios only handle formatting of the data
@@ -777,7 +776,163 @@ The actual reading and writing is done by the stream buffers maintained by basic
 
 
 
+Member Functions for Input:
+Operators >> and << read formatted data. They skip white lines, etc.
+You use these functions to read and write unformatted data. If an exception
+is thrown, badbit is set.
 
+
+int istream::get()
+read next character. Returns read character or EOF.
+
+istream& istream::get (char& c) 
+Reads the next character into c.
+Can check the stream state on returned stream.
+
+istream& istream::get (char* str, streamsize count, char delim)
+Read count-1 characters into str. str should be allocated and have enough space.
+Default delim is '\n'
+Reading is terminated if the next character to be read is delim.
+The terminating character is not read so the next read would still read it.
+'\0' is appended.
+
+istream& istream::getline (char* str, streamsize count, char delim)
+Reads count-1 characters but stops if delim is encoutered. delim is read
+but discarded so the next read won't encounter it.
+                                     
+istream& istream::read (char* str, streamsize count)
+Reads count characters.
+Doesn't automatically add the null terminating character.
+
+
+IGNORE -> read and discard characters
+ 
+istream& istream::ignore ()
+ignore one character
+
+istream& istream::ignore (streamsize count, int delim)
+ignores upto count character or until delim is read and discarded.
+
+cin.ignore (numeric_limits<std::streamsize>::max(), '\n')
+ignores rest of the line.
+
+cin.ignore (numeric_limits<std::streamsize>::max())
+ignores rest of the file.
+
+istream& istream::unget (), putback(char c)
+put the last character read back into the stream so that it is read again by the next read.
+
+ostream& ostream::put (char c)
+ostream& ostream::write (const char* str, streamsize count)
+Writes count characters of the string str to the stream
+
+MANIPULATORS
+Implemented as functions passed passed to the IO operators as arguments
+
+1.
+ostream& ostream::operator << (ostream& (*op) (ostream&))
+{
+  return (*op) (*this)
+}
+
+2.
+ostream& std::endl (std::ostream& strm)
+{
+  strm.put('\n');
+  strm.flush();
+  return strm;
+}
+
+
+std::cout << std::endl
+--> invoke 1 and pass 2
+
+FILE ACCESS
+basic_ifstream derives from basic_istream
+basic_ofstream derives from basic_ostream
+basic_fstream derives from basic_iostream
+basic_filebuf derives from basic_streambuf
+
+typedef basic_ifstream<char> ifstream
+typedef basic_ofstream<char> ofstream
+typedef basic_fstream<char>  fstream
+typedef basic_filebuf<char> filebuf
+
+
+ofstream file(name);
+if (!file) { error }
+
+FILE FLAGS
+in  -> open for reading (default for ifstream)
+out -> open for writing (default for ofstream)
+app -> append mode
+ate -> positions at the end of file after opening
+binary -> do not replace special characters (like replacing CR and LF)
+
+RANDOM ACCESS
+basic_istream:
+tellg()    -> returns the read position
+seekg(pos) -> sets the read position as an absolute value
+seekg(offset, rpos) -> Sets the read position as a relative value
+
+basic_ofstream: 
+tellp, seekp
+
+
+std::ios::pos_type pos = file.tellg()
+file.seekg(pos);
+file.seekg(-10, std::ios::end) --> seek 10 chars before the end
+beg, curr, end are constants in ios.
+
+STRING ACCESS
+basic_istringstream derives from basic_istream
+basic_ostringstream derives from basic_ostream
+basic_stringstream derives from basic_iostream
+basic_filebuf derives from basic_streambuf
+
+typedef basic_istringstream<char> istringstream
+typedef basic_ostringstream<char> ostringstream
+typedef basic_stringstream<char>  stringstream
+typedef basic_stringbuf<char> stringbuf
+
+You can also use seek functions on these streams
+You can also use file open modes on them.
+
+std::ostringstream os (str, ios::out|ios::app) --> append mode. Same as mode ios::ate
+
+int x;
+float f;
+string s = "3.7"
+istringstream is(s)
+is >> x >> f; --> x will have 3 and f will have 0.7
+
+STREAM BUFFER
+The actual reading and writing is done by the stream buffer classes.
+Own api for putting and getting characters.
+
+istreambuf_iterator and ostreambuf_iterator are the iterators available
+
+STREAM ITERATORS
+Iterator adapters that allow you to use a stream as source or destination.
+Read elements from an input stream or write values to an output stream.
+
+The iterator object overloads << or >> to accomplish special behavior
+iterator operator *() { return iterator} //no op
+iter << value         {writes value to stream using ostream << value, followed by delim if set }
+++iter, iter++        { no-op}
+
+istream iterator
+*iter --> Returns the actual value read before. Read 1st value if not done by ctr()
+++iter --> Reads next value and returns its position
+iter++ --> Reads next value but returns an iterator for the previous value
+
+
+
+
+So, we have streams, stream_buffers and iterators.
+Looks like default stream buffers are already attached to stream objects - filebuf, stringbuf etc.
+istream and ostream iterators are wrappers where certain operators are overloaded so that we can 
+easily read and write instead of using stream api. They are also work seamlessly with algorithms like copy.
 
 
 
@@ -787,8 +942,8 @@ The actual reading and writing is done by the stream buffers maintained by basic
 def print_preorder(nd):
     print nd   
 
-    if (nd.left is not None):  
         print_preorder(nd.left)
+    if (nd.left is not None):  
         
     if (nd.right is not None): 
        print_preorder(nd.right)
