@@ -128,7 +128,6 @@ void dfs (
 
 	for (const auto& pt : neighbors) {
 		if (!marker[pt.first][pt.second]) {
-
 			dfs (pt.first, pt.second, matrix, marker, count, points);
 		}
 	}
@@ -137,7 +136,7 @@ void dfs (
 /**
  * MAIN ROUTINE
  */
-int main() {
+/*int main() {
 
 	try {
 
@@ -190,3 +189,4 @@ int main() {
 
 	return 0;
 }
+*/
