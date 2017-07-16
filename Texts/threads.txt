@@ -41,6 +41,29 @@ converse routine.
 
 * Changing the default stack size: pthread_attr_setstacksize(..)
 
+
+
+THREAD POOL:
+Thread pools are ideal for developing multi-threaded server applications.
+The pool uses a queue to distribute work among threads. Jobs are queued for
+execution as they arrive. The next available thread pickup a job.
+If no threads are available new threads are created up to limit given at construction
+of the thread pool. Jobs keep queueing up if all threads are busy. If threads remain
+idle beyond a threshold then those threads will be destroyed. However, there is always 
+a certain minumun number of threads that are maitained.
+
+threadpool(.., minThreads, maxThreads, maxIdleTime)
+--> minThreads are always active. Any thing beyond and that stays idle > maxIdleTime will
+    be destroyed.
+
+drain()             -> disable queueing and wait until all pending job complete.
+enqueueJob(functor) -> functor will be executed by the next available thread.
+                       Return 0 on success or non-zero if queueing is currently disabled.
+shutdown()          -> disable queueing, cancel all queued jobs and shut down threads.                    
+                       Wait for completion?
+start()             -> enable queueing, spawn min threads.                       
+stop()              -> disable queueing, wait for pending jobs to complete and then shutdown.
+
 MUTEX:
 * Thread Synchronization and protecting shared data when multiple writes occur.
 There is ownership to a mutex. Only one thread can own it at a time.
@@ -147,6 +170,61 @@ main() {
 	producerThread.join();
 	consumerThread.join();	
 }
+
+READER WRITER LOCK:
+Generally used for resources which are frequently read and less frequently updated.
+RW-Locks provide 2 distinct lock states - read lock and writer lock.
+Multiple callers can simultaneously acquire a read lock but only one write lock
+may be active at any given time. 
+
+If a read lock is attemted and there are no active or pending write locks, the lock
+will be immediately granted. Otherwise, the reader will block till all active/pending
+write locks are released.
+
+A write lock is mutually exclusive.
+
+A read lock can be converted to write lock in 2 modes: optimitic or pessimistic.
+Optimistic: Conversion is not guaranteed to be atomic. 
+Read lock is released and then a write lock is acquired. In the mean time it is
+possible a read or write lock was acquired and the state of the data was changed. 
+So condition has to re-evaluated after a write lock was acquired.
+
+Pessimistic: Conversion is atomic. No chance of state of data to be changed.
+
+Example:
+getUserInfo() {
+	lock.lockRead();
+	auto it = map.find(userId);
+	..
+	lock.unlock()
+	return *it;
+}	
+
+
+updateUserInfo() {
+	lock.lockRead();  //1st determine if data exists
+	auto it = map.find(userId);
+	if (!it)
+		return false;
+	
+	lock.upgradeToWriteLock()  //optimistic
+	it = map.find(userId);
+	if (!it) {
+		lock.unlock();
+		return false;	
+	}
+	update(it);
+	lock.unlock()
+	return true;
+}
+
+lockRead()            -> locks for read
+lockReadReserveWrite  -> locks for read and when upgradeToWriteLock() is called,
+                      -> lock is converted to write lock atomically
+lockWrite()           -> locks for write
+upgradeToWriteLock()  -> return 0 if upgrade happened atomically else non-zero
+unlock                -> unlock read or write lock based on context
+
 
 
 SINGLE WRITER / MULTIPLE READER
