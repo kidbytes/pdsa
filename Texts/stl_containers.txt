@@ -112,6 +112,9 @@ which elements were inserted. Typically implemented as BSTs.
 
 * Once in the set they cannot be modified.
 
+* pair<iterator, bool> insert(): Extends the container by inserting new element.
+If the key already exists, item is not inserted and bool is set to false.
+
 * clear(): Removes all elements, leaving the container with size 0.
 
 * count(val): Returns count of elements that are equivalent to val

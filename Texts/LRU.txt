@@ -1,0 +1,44 @@
+
+struct Data {
+	int key;
+	string value;
+	int ts;
+	
+	bool operator < (const Data& rhs) {
+		return this->ts <= rhs.ts; //Strict weak ordering
+	}
+};
+
+unordered_map<int, set<Data>::iterator> dict;
+set<Data> bst;
+const int maxSize = 10;
+
+
+
+const Data* get(int key) {
+
+	// Update timestamp by deleting existing entry and adding a new one
+	if (dict.count(key) > 0) {  
+		auto it = dict[key];
+		Data newData(*it);
+		newData.ts = now();
+				
+		bst.erase(it);
+		set (newData);
+		return data[key];
+	}
+	else {
+		return nullptr;
+	}
+}
+
+
+void set(const Data& data) {
+
+	//First element is the least recently used
+	ib (bst.size() == maxSize)
+		bst.erase(bst.begin());
+		
+	auto i = bst.insert(data);
+	dict[data.key] = i.first;
+}
