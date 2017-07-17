@@ -157,7 +157,7 @@ for (int i=0; i < 100; i++) {
 while (true) {
 	mtx.lock();
 	while (que.size() == 0) {
-		cond.wait(mtx2);
+		cond.wait(mtx);
 	}
 	Request req = que.pop_front();
 	req.process();
@@ -227,7 +227,60 @@ unlock                -> unlock read or write lock based on context
 
 
 
+
+
 SINGLE WRITER / MULTIPLE READER
+
+barrier(numReaders + 1)  //1 for writer
+int readerCount
+Writer:
+while (true) {
+	mutex.lock()
+	write(buffer)
+	mutex.unlock()
+	cond.broadcast() //Wakeup all reading threads
+	barrier.wait()
+}
+
+Reader:
+while (true) {
+	mutex.lock()
+	while (buffer.empty()) {
+		cond.wait(mutex) //Wait till buffer has some data
+	}
+	mutex.unlock();  //When data is available, release the lock immediately
+	                 //so that other threads can read too
+	read(buffer)
+	barrier.wait()
+}
+
+
+
+WIKIPEDIA: Using 2 mutexes
+beginRead() {
+	lock r
+	increment b
+	if (b == 1) 
+		lock g
+		
+	unlock r
+}
+
+endRead() {
+	lock r
+	decrement b
+	if (b == 0)
+		unlock g
+		
+	unlock r
+}
+
+write() {
+	lock g
+	write
+	unlock g
+}
+
 
 WRITER:
 We can write if the following are true:
