@@ -24,10 +24,12 @@ class Trie {
 		char c;
 		map<char, Node*> childs;
 		bool isWord;
+        int wordCount;
 
 		Node(char c = '*') {
 			isWord = false;
 			this->c = c;
+            wordCount = 0;
 		}
 	};
 
@@ -38,12 +40,15 @@ public:
 
 	void add(const string& name) {
 		Node* curr = root;
+        curr->wordCount++;
+
 		for (char c : name) {
 			if (curr->childs.count(c) == 0) {
 				Node* ptr = new Node(c);
 				curr->childs[c] = ptr;
 			}
 			curr = curr->childs[c];
+            curr->wordCount++;
 		}
 		curr->isWord = true;
 	}
@@ -57,23 +62,7 @@ public:
 			curr = curr->childs[c];
 		}
 
-		int count = 0;
-		queue<Node*> que;
-		Node* nPtr = nullptr;
-
-		que.push(curr);
-		while(que.size() > 0) {
-			nPtr = que.front();
-			que.pop();
-			if (nPtr->isWord)
-				count++;
-
-			for (auto& x : nPtr->childs) {
-				que.push(x.second);
-			}
-		}
-
-		return count;
+        return curr->wordCount;
 	}
 
 	void printWords() {
@@ -112,7 +101,6 @@ public:
 	        else
 	            cout << trie.find(contact) << endl;
 	    }
-
 	    trie.printWords();
 	}
 
