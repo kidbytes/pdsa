@@ -41,6 +41,29 @@ converse routine.
 
 * Changing the default stack size: pthread_attr_setstacksize(..)
 
+
+
+THREAD POOL:
+Thread pools are ideal for developing multi-threaded server applications.
+The pool uses a queue to distribute work among threads. Jobs are queued for
+execution as they arrive. The next available thread pickup a job.
+If no threads are available new threads are created up to limit given at construction
+of the thread pool. Jobs keep queueing up if all threads are busy. If threads remain
+idle beyond a threshold then those threads will be destroyed. However, there is always 
+a certain minumun number of threads that are maitained.
+
+threadpool(.., minThreads, maxThreads, maxIdleTime)
+--> minThreads are always active. Any thing beyond and that stays idle > maxIdleTime will
+    be destroyed.
+
+drain()             -> disable queueing and wait until all pending job complete.
+enqueueJob(functor) -> functor will be executed by the next available thread.
+                       Return 0 on success or non-zero if queueing is currently disabled.
+shutdown()          -> disable queueing, cancel all queued jobs and shut down threads.                    
+                       Wait for completion?
+start()             -> enable queueing, spawn min threads.                       
+stop()              -> disable queueing, wait for pending jobs to complete and then shutdown.
+
 MUTEX:
 * Thread Synchronization and protecting shared data when multiple writes occur.
 There is ownership to a mutex. Only one thread can own it at a time.
@@ -56,7 +79,7 @@ to check if the condition is met.
 //Checking
 	mutex.lock();
 	while (false == predicate()) {         
-	    condition.wait(&mutex);  //mutex will be unlocked automatically
+	    condition.wait(&mutex);  //mutex will be unlocked & code blocked atomically
 	}
 	
 	..
@@ -70,8 +93,195 @@ to check if the condition is met.
 	muntex.unlock();
 	
 	
+BARRIER:
+Job is composed of a sequence of steps. All the threads have to finish a step
+before proceeding to the next step. So, they need to synchronize at each step.
+
+barrier(int N)  ==> N threads have to call wait() before the barrier will be released
+and all the threads are released. When each thread calls wait() a counter is decremented
+and the thread enters a wait state. When the Nth thread calls wait(), the counter becomes
+zero and all threads are released and the barrier count is reset to N.
+
+wait()
+timedWait(n)
+numThreads() -> Number of threads that must be called before all threads will be unblocked.
+                Guess, the internal counter value.
+
+
+LATCH:
+A master thread is controlling all slave threads and must wait for them to finish
+before proceeding. When a slave thread finishes it need not wait or block for others
+to catchup. It just has to call arrive and return. In this way the thread can be 
+returned to Thread Pool and can process other request.
+
+Latch is for one time use unlike barrier. The counter is never reset.
+
+Latch(int N)     ==> N threads have to call arrive() before all threads will be unblocked.
+arrive()         -> decrement counter by 1
+arriveAndWait()  -> arrives and blocks like a thread in Barrier.
+countDown(int N) -> decrement the counter by N.
+currentCount()
+tryWait()        -> return true if count==0. Non-blocking.
+
+The main thread calls latch.wait() which blocks until count become 0.
+
+
+SEMAPHORE:
+A semaphore with a count of 1 can be used as a mutex.
+If count > 0 then it can be used for resource sharing.
+semaphore()       -> initial count 0
+semaphore(int N)  -> initial count N
+post()            -> increment count by 1
+post(int N)       -> increment count by N
+wait()            -> block until count > 0, then decrement count atomically and return.
+
+
+** On a semaphore a thread blocks when the count is 0.
+** For a barrier and latch all threads unblock when the count is 0.
+** For mutex and semaphore only one thread is unblocked when conditions are met.
+** For condition variable, barrier and latch several threads will be unblocked.
+** cond.broadcast() unblocks several thread and cond.signal unblocks only one thread,
+PRODUCER-CONSUMER
+One or more producers and one or more consumers
+Requests are put in Q by producers and removed by consumers.
+
+// Producer thread
+for (int i=0; i < 100; i++) {
+	Request req(i);
+	mtx.lock();
+	que.push_back(req);
+	mtx.unlock();
+	cond.signal();
+}
+
+// Consumer thread
+while (true) {
+	mtx.lock();
+	while (que.size() == 0) {
+		cond.wait(mtx);
+	}
+	Request req = que.pop_front();
+	req.process();
+	mtx.unlock();
+	return;
+}
 	
+// Main thread
+main() {
+	producerThread.join();
+	consumerThread.join();	
+}
+
+READER WRITER LOCK:
+Generally used for resources which are frequently read and less frequently updated.
+RW-Locks provide 2 distinct lock states - read lock and writer lock.
+Multiple callers can simultaneously acquire a read lock but only one write lock
+may be active at any given time. 
+
+If a read lock is attemted and there are no active or pending write locks, the lock
+will be immediately granted. Otherwise, the reader will block till all active/pending
+write locks are released.
+
+A write lock is mutually exclusive.
+
+A read lock can be converted to write lock in 2 modes: optimitic or pessimistic.
+Optimistic: Conversion is not guaranteed to be atomic. 
+Read lock is released and then a write lock is acquired. In the mean time it is
+possible a read or write lock was acquired and the state of the data was changed. 
+So condition has to re-evaluated after a write lock was acquired.
+
+Pessimistic: Conversion is atomic. No chance of state of data to be changed.
+
+Example:
+getUserInfo() {
+	lock.lockRead();
+	auto it = map.find(userId);
+	..
+	lock.unlock()
+	return *it;
+}	
+
+
+updateUserInfo() {
+	lock.lockRead();  //1st determine if data exists
+	auto it = map.find(userId);
+	if (!it)
+		return false;
+	
+	lock.upgradeToWriteLock()  //optimistic
+	it = map.find(userId);
+	if (!it) {
+		lock.unlock();
+		return false;	
+	}
+	update(it);
+	lock.unlock()
+	return true;
+}
+
+lockRead()            -> locks for read
+lockReadReserveWrite  -> locks for read and when upgradeToWriteLock() is called,
+                      -> lock is converted to write lock atomically
+lockWrite()           -> locks for write
+upgradeToWriteLock()  -> return 0 if upgrade happened atomically else non-zero
+unlock                -> unlock read or write lock based on context
+
+
+
+
+
 SINGLE WRITER / MULTIPLE READER
+
+barrier(numReaders + 1)  //1 for writer
+int readerCount
+Writer:
+while (true) {
+	mutex.lock()
+	write(buffer)
+	mutex.unlock()
+	cond.broadcast() //Wakeup all reading threads
+	barrier.wait()
+}
+
+Reader:
+while (true) {
+	mutex.lock()
+	while (buffer.empty()) {
+		cond.wait(mutex) //Wait till buffer has some data
+	}
+	mutex.unlock();  //When data is available, release the lock immediately
+	                 //so that other threads can read too
+	read(buffer)
+	barrier.wait()
+}
+
+
+
+WIKIPEDIA: Using 2 mutexes
+beginRead() {
+	lock r
+	increment b
+	if (b == 1) 
+		lock g
+		
+	unlock r
+}
+
+endRead() {
+	lock r
+	decrement b
+	if (b == 0)
+		unlock g
+		
+	unlock r
+}
+
+write() {
+	lock g
+	write
+	unlock g
+}
+
 
 WRITER:
 We can write if the following are true:
