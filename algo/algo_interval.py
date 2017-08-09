@@ -84,6 +84,37 @@ Maximize the number of non-overlapping meetings scheduled in the
 same room. (That is, schedule as many meetings as possible in the conference room.)
 
 Strategy: Sort the meetings according to the finish time, and pick them greedily.
+struct Meeting {
+    	int start_time;
+    	int end_time;
+    	string name;
+    };
+
+vector<Meeting> meets;  //Sorted on end_time
+
+int end_time = meets[0].end_time;
+int ix = 1;
+
+while (ix < meets.size()) {	
+	while (meets[ix].start_time < end_time)) {
+		ix++;
+		if (ix >= meets.size())
+			return;
+	}
+	
+	print meets[ix];
+	end_time = meets[ix].end_time;
+	ix++;
+}
+
+This should work
+end_time = -1;
+for (auto& m : meets) {
+	if (m.start_time > end_time) {
+		print m;
+		end_time = m.end_time;
+	}
+}
 
 
 Multiple Room Scheduling (in text)
@@ -95,4 +126,20 @@ events using the minimal number of rooms. Once again, a greedy algorithm will su
 schedule the event in a new room.
 
 '''        
-        
+vector< vector<Meeting> > rooms;
+for (auto& m : meets) { //sorted by start_time
+	bool added = false;
+	for (auto& r : rooms) {
+		const Meeting& lastRoom = r.back();
+		if (m.start_time > lastRoom.end_time) {
+			r.push_back(m);
+			added = true;
+		}
+	}
+	
+	if (!added) {
+		rooms.push_back(vector<Meeting>());
+		rooms.back().push_back(m);
+	}	
+}
+

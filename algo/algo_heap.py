@@ -14,6 +14,7 @@
 
 
 # Compute K closest stars
+# Max-Heap
 # Farthest star should be at the top of heap
 # If the next input is closer than top, then pop the top item and insert input
 #

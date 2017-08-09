@@ -168,7 +168,7 @@ auto authAndAccess(Container& c, Index i)
 
 Here auto only tells we are using trailing return type.
 With trailing return type we can use function parameters to specify return type.
-Forstd::vector<bool>, however, operator[] does not return a bool&. Instead, it 
+For std::vector<bool>, however, operator[] does not return a bool&. Instead, it 
 returns a brand new object. This is where decltype comes to rescue.
 ===============================================
 

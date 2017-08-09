@@ -109,4 +109,18 @@ if (prod > maxProd)
 i++
 
 
-  
+if (x == A[mid]):
+	return mid;
+if (A[mid] > A[right]): // decreasing or circular 54321,  4560123 
+	if (x < A[mid]:
+		left = mid+1
+	else:
+		right = mid-1
+else:  // increasing or circular 
+	if (x < A[mid]):
+		
+	
+	rfind(x, left, right)
+		
+	
+
