@@ -140,6 +140,8 @@ wait()            -> block until count > 0, then decrement count atomically and 
 ** For mutex and semaphore only one thread is unblocked when conditions are met.
 ** For condition variable, barrier and latch several threads will be unblocked.
 ** cond.broadcast() unblocks several thread and cond.signal unblocks only one thread,
+
+
 PRODUCER-CONSUMER
 One or more producers and one or more consumers
 Requests are put in Q by producers and removed by consumers.
@@ -160,8 +162,10 @@ while (true) {
 		cond.wait(mtx);
 	}
 	Request req = que.pop_front();
-	req.process();
 	mtx.unlock();
+	
+	req.process();
+	
 	return;
 }
 	

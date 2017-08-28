@@ -805,6 +805,15 @@ Reads count characters.
 Doesn't automatically add the null terminating character.
 
 
+std::getline:
+istream& getline (istream& is, string& str, char delim);
+extracts characters from is and pushes back to str until delim is reached.
+delim is discarded so next read doesn't encounter it.
+
+istream& getline (istream& is, string& str);
+extracts characters from is and pushes back to str until '\n' is reached.
+
+
 IGNORE -> read and discard characters
  
 istream& istream::ignore ()

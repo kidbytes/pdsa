@@ -110,7 +110,9 @@
 #########################################
 # From the inherent DAG we need to find the longest path.
 # At every node, incident edges include all previous nodes that are less than current node.
-#
+# Can't you go in the reverse?
+
+
 # for i in range(1, len(items)):
 #    for j in range (1, i+1):
 #        if A[j] < A[i]:
@@ -273,7 +275,7 @@ knapsack_with_repetition(weights, values, capacity)
 #             start = end = i
 #             isum = items[i]
 #         else:
-#             sum += items[i]
+#             isum += items[i]
 #             end = i
 #             
 # 
