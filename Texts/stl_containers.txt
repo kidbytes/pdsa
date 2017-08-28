@@ -228,6 +228,11 @@ Same methods as a stl:map with a few more.
 * hash_function(): Get hash function
 * key_eq(): Get key equivalence predicate
                  
+*** PRIORITY_QUEUE
+* top():   Access top element
+* push():  Insert element
+* pop():   Remove top element
+                 
 
 
 Proficiency in C++ including STL

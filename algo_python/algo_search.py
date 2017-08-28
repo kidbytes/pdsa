@@ -89,7 +89,7 @@ def find_pivot_in_circular(items):
             
     return l      
 
-# Finds the smallest element in a circular sorted list
+# Finds the smallest element in a circular sorted list    		
 def find_min_in_circular(items):  
     p = find_pivot_in_circular(items)
     if p is not None:
@@ -152,6 +152,29 @@ def find_k_unknown_length(items, k):
 # So, you need an array of 2^16 32-bit unsiged ints. You can probably use shorts.
 # For each of the 2^16 indexes, we increment the count. There will be one entry whose
 # total is less than 2^16.
+
+#index by most significant 16bits
+for (i=0; i < allIps; i++)
+	A[i >> 16] += 1
+
+# each index should have a count of 2^16
+for (i=0; i < 2^16; i++)
+	if (A[i] < 2^16)
+		savedIndex = i
+		break
+	
+# index by least 16 significant bits
+for (i=0; i < allIps; i++)
+	if (A[i >> 16] == savedIndex)
+		B[i && x00001111] += 1
+		
+# each index should have a count of 1
+for (i=0; i < 2^16; i++)
+	if (B[i] == 0)
+		savedIP = (savedIndex << 16) | i
+		break		
+		
+return savedIP
 
 # A and B are 2 arrays with same numbers except for one which is a repeat in A.
 # Find A XOR B. There should be only one entry which is 1. For this entry, do

@@ -766,7 +766,7 @@ if (! (std::cin >> x)) { } --> Have to use parentheses due to operator precedenc
 Standard Input/Output Functions:
 
 Looks like a bitset is used for all the bits. But this is implementation detail.
-iostate is th e name of the variable for this bitset.
+iostate is the name of the variable for this bitset.
 
 If the value of this bitset is 0, it means goodbit is set. Therefore the value of goodbit is 0.
 
@@ -778,7 +778,7 @@ The actual reading and writing is done by the stream buffers maintained by basic
 
 Member Functions for Input:
 Operators >> and << read formatted data. They skip white lines, etc.
-You use these functions to read and write unformatted data. If an exception
+You use the functions below to read and write unformatted data. If an exception
 is thrown, badbit is set.
 
 
@@ -897,7 +897,7 @@ STRING ACCESS
 basic_istringstream derives from basic_istream
 basic_ostringstream derives from basic_ostream
 basic_stringstream derives from basic_iostream
-basic_filebuf derives from basic_streambuf
+basic_stringbuf derives from basic_streambuf
 
 typedef basic_istringstream<char> istringstream
 typedef basic_ostringstream<char> ostringstream

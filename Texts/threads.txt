@@ -83,6 +83,7 @@ to check if the condition is met.
 	}
 	
 	..
+	//mutex will be locked when wait returns
 	mutex.unlock();
 
 
@@ -292,11 +293,42 @@ We can write if the following are true:
 	2. No Reader
 	
 READER:
-	1. No Writer
+    * There is something in buffer
+	* No Writer
 	
 A writer needs exclusive access so we can use mutex	
 Need a condition variable for readers
 
+
+Semaphore readerCount;
+
+
+void write() {
+	writerMutex.lock();
+	
+}
+void read() {
+	mtx1.lock();
+	while(writerCount != 0) {
+		cond1.wait(&mtx1);
+	}
+	readerCount++;
+	read()...
+	readerCount--;
+	if (readerCount == 0)
+		cond2.signal();
+		
+	mtx1.unlock();
+}
+
+void write() {
+	
+}
+
+1. can use semaphore for counting
+ReadSem
+class AllocateReader {
+}
 
 def write():
 	hMutexWriter.lock()

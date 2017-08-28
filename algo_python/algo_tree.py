@@ -175,7 +175,18 @@ def foo(listOfLists):
             if (cnt == 0):
                 prev = None
                 cnt = len(que)
-            
+8421            
+0100
+1000
+1100
+
+128 64 32 16
+           
+0   0  0   1
+0   0  1   0
+0   0  1   1
+0   1  
+
 '''
 0       0
 2       4
