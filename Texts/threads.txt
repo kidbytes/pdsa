@@ -188,8 +188,8 @@ write locks are released.
 
 A write lock is mutually exclusive.
 
-A read lock can be converted to write lock in 2 modes: optimitic or pessimistic.
-Optimistic: Conversion is not guaranteed to be atomic. 
+A read lock can be converted to write lock in 2 modes: optimistic or pessimistic.
+Optimistic: Conversion is not gu aranteed to be atomic. 
 Read lock is released and then a write lock is acquired. In the mean time it is
 possible a read or write lock was acquired and the state of the data was changed. 
 So condition has to re-evaluated after a write lock was acquired.
