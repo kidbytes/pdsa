@@ -547,7 +547,7 @@ functions, find_if, and various sorting algorithms.
 Function objects are always copied by value. So, if your function has nested calls,
 remember each nested call will make a copy of the predicate and if predicate has 
 state the change in state is lost after the call to nested function. You can't 
-transfer the new state to next method.
+transfer the new state to(parent) next method.
 
 
 ITEM 40:
