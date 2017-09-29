@@ -30,7 +30,7 @@
 # Strip off the last item from final solution. The new solution should
 # correspond to some smaller input and give us an indea of how to compute the
 # bigger solution using it.
-# If you are working with multiple dimentions, then input can be reduced along
+# If you are working with multiple dimensions, then input can be reduced along
 # each dimension
 
 # S _ N O W Y
@@ -40,11 +40,11 @@
 
 # To identify smaller subproblems:
 #    The final solution can be in one of the 3 forms:
-#    x[m]    or    _    or   x[m-1]
-#      _          y[n]       y[n-1] 
+
+#      _          y[n]       y[n] 
 #
 # You need to find minimum of  edit(x[m], y[n-1]), edit(x[m-1], y[n]) and 
-# diff(i,j) + edit(x[m-1], y[n-1])
+# diff(m,n) + edit(x[m-1], y[n-1])
 # To cache solution e(i,j) for x[i] and  y[j] we need a 2-D array
 # e(i-1,j), e(i,j-1) and e(i-1,j-1) should be computed before e(i,j)
 # We can go in increasing row order or increasing column order. 
@@ -127,7 +127,7 @@
 #  2      3       $14
 #  3      4       $16
 #  4      2       $9
-# Given Capacity/Weight = 10
+# Given Capacity aka Weight = 10
 
 # Any item can be the last item
 # if item 1, then we are looking at value V[10-6] + $30

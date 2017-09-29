@@ -9,6 +9,7 @@
 #include <vector>
 #include <list>
 #include <deque>
+#include <limits>
 
 using Node = BinaryTree::Node;
 
@@ -87,14 +88,38 @@ BinaryTree::insert(Node* nd, int* left, int* right) {
 	return ret;
 }
 
+int BinaryTree::maxDepth(Node* nd)
+{
+	if (!nd)
+		return 0;
 
+	int ldepth = 1 + maxDepth(nd->left);
+	int rdepth = 1 + maxDepth(nd->right);
+
+	return max(ldepth, rdepth);
+}
+
+int BinaryTree::minDepth(Node* nd)
+{
+	if (!nd)
+		return numeric_limits<int>::max();
+
+	if (!nd->left && !nd->right)
+		return 1;
+
+	int ldepth = 1 + minDepth(nd->left);
+	int rdepth = 1 + minDepth(nd->right);
+
+	return min(ldepth, rdepth);
+
+}
 void BinaryTree::visitInorder(Node* nd)
 {
 	if (!nd)
 		return;
 
 	visitInorder(nd->left);
-	cout << nd->d << SPACE;
+	cout << nd->d << " ";
 	delete nd;
 	visitInorder(nd->right);
 }
@@ -136,7 +161,7 @@ void BinaryTree::bfsPrint(Node* nd)
 	while (que.size()) {
 		curr = que.front();
 		que.pop_front();
-		cout << curr->d << SPACE;
+		cout << curr->d << " ";
 		sz--;
 
 		if (curr->left)

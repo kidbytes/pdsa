@@ -77,6 +77,10 @@ Comparison should produce a strict weak ordering of elements.
 
 * splice(pos, x): Transfers elements from x into the container, inserting them at pos.
 This alters the size of both containers.
+splice(iterator pos, list& x, iterator i)
+	-> transfers element at i from x and inserts at position pos
+splice(iterator pos, list& x, iterator begin, iterator end)
+    -> range version of above
 
 * swap(x): Swaps container with x.
 
@@ -120,6 +124,8 @@ If the key already exists, item is not inserted and bool is set to false.
 * count(val): Returns count of elements that are equivalent to val
 
 * find(val): Returns a iterator to val if found. Otherwise, return set::end()
+Returns an iterator pointing to elements of type value_type. value_type is an alias
+to type of items stored in set.
 
 * lower_bound(val): Returns an iterator to first element >= val
 If val is there, iterator to it is returned. Otherwise, iterator to next element is returned.
@@ -148,6 +154,8 @@ To get all matching elements, use equal_range()
 If not available throws out_of_range exception
 
 * find(key): Returns a iterator to key if found. Otherwise, return set::end()
+Returns an iterator pointing to elements of type value_type. value_type is an alias
+to pair<const key_type, mapped_type>
 
 * clear(): Removes all elements, leaving the container with size 0.
 

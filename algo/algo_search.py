@@ -166,7 +166,7 @@ for (i=0; i < 2^16; i++)
 # index by least 16 significant bits
 for (i=0; i < allIps; i++)
 	if (A[i >> 16] == savedIndex)
-		B[i && x00001111] += 1
+		B[i && x00001111] += 1  --> Use least significant bits here
 		
 # each index should have a count of 1
 for (i=0; i < 2^16; i++)

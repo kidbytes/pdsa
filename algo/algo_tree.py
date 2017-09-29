@@ -82,7 +82,7 @@ def convert_bst_to_doubly_linked_list(nd, lastNd):
 # Return a list of k most common pages
 # Hash Table has (timestamp -> pointer to timestamp record in BST)
 # Whenever we need to increment count, find hash entry, reference BST
-# and increment the counter there. 
+# and increment the counter by deleting the entry and inserting it again with new counter.
 # Find max in BST and call k predecessor calls to find k most hit entries
 
 

@@ -37,6 +37,8 @@ public:
 	void visitInorder(Node* nd);
 	void setSibling();
 
+	static int maxDepth(Node* nd);
+	static int minDepth(Node* nd);
 	static void bfsPrint(Node* nd);
 	static Node* insert(int l, Node* nd);
 	static Node* insert(Node* nd, int r);

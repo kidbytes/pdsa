@@ -42,7 +42,7 @@ f(const int x)  => T is int, param is const int&
 f(const int& x) => T is int, param is const int& 
                    Ignore reference in input expr     
 => Here there is no need to deduce const as part of T
-because param has const in it. Look how the form of param
+because param has const in it. Notice how the form of param
 is impacting the type deduced for T.
 
 With pointer it is the same as references

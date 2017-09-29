@@ -74,7 +74,11 @@ CONDITION VARIABLES:
 * Mutexes implement synchronization by controlling thread access to data. Condition
 variables allow threads to synchronize based upon the actual value of data. Without
 condition variables, we have to use continuous polling (possibly in a critical section),
-to check if the condition is met.
+to check if the condition is met. We need a mutex here because we are checking some 
+shared state in two places. One sets it and one checks it - possibly in 2 different threads.
+And this data must be protected from race conditions. OS wakes up the waiting thread when
+condition is met and when signal()/broadcast() is called. The loop is not executed continuosly. 
+Instead the thread sleeps. 
 
 //Checking
 	mutex.lock();
@@ -90,8 +94,26 @@ to check if the condition is met.
 //Setting
 	mutex.lock();
 	setPredicateTrue();
+	condition.signal();  //Wakeup waiting thread. We also have broadcast() which wakes many threads
 	muntex.unlock();
 	
+// Do we really need to use some predicate?
+mutex.lock()
+condition.wait(&mutex)   //wait
+mutex.unlock()
+	--> we need mutex above because wait() takes a mutex.
+	    Plus mutex must be locked and unlocked as per the specification
+
+condition.signal();      //wakeup waiting thread
+	--> When we don't have a shared state, do we need mutex here?
+	
+What happens when signal() happens before wait(). Looks like the waiting thread will wait forever.
+To solve this problem we need a predicate. The wait will happen only if predicate is false. 
+If it is true, we will never enter the loop. 
+
+In cases where we know wait is always going to happen before signal predicate may not be needed.
+If caller and setter are in different threads then we will need a predicate.
+
 	
 BARRIER:
 Job is composed of a sequence of steps. All the threads have to finish a step
@@ -140,7 +162,9 @@ wait()            -> block until count > 0, then decrement count atomically and 
 ** For a barrier and latch all threads unblock when the count is 0.
 ** For mutex and semaphore only one thread is unblocked when conditions are met.
 ** For condition variable, barrier and latch several threads will be unblocked.
-** cond.broadcast() unblocks several thread and cond.signal unblocks only one thread,
+** cond.broadcast() unblocks several thread and cond.signal() unblocks only one thread,
+
+
 PRODUCER-CONSUMER
 One or more producers and one or more consumers
 Requests are put in Q by producers and removed by consumers.
@@ -178,7 +202,7 @@ RW-Locks provide 2 distinct lock states - read lock and writer lock.
 Multiple callers can simultaneously acquire a read lock but only one write lock
 may be active at any given time. 
 
-If a read lock is attemted and there are no active or pending write locks, the lock
+If a read lock is attempted and there are no active or pending write locks, the lock
 will be immediately granted. Otherwise, the reader will block till all active/pending
 write locks are released.
 
@@ -281,6 +305,80 @@ write() {
 	write
 	unlock g
 }
+
+READING FROM 2 STREAMS:
+
+struct SyncObject {
+	Condition cond;
+	Mutex mtx;
+	bool dataAvailable;
+	int streamNum;
+	Tuple t;
+	
+	SyncObject(int streamNum) {
+		dataAvailable = false;
+		this->streamNum = streamNum;
+	}
+}
+
+
+Mutex writeMtx;
+Tuple t;
+int streamNum;
+
+
+// 2 Threads will be running for 2 streams
+void thread_func(Stream& s, int streamNum, SyncObject& sync) {
+
+	while (true) {
+		// Blocking call
+		Tuple t = s.poll();
+		writeMtx.lock();
+		sync.mtx.lock();
+		sync.t = t;
+		syn.streamNum = streamNum
+		sync.mtx.unlock();
+		sync.signal();
+	}
+}
+
+
+
+
+void main() {
+	list<Tuple> l1, l2;
+	SyncOjbect sync;
+	pthread t1 = pthread_create(thread_func, 1, sync);
+	pthread t2 = pthread_create(thread_func, 2, sync);
+	
+	sync.mtx.lock();
+	while (sync.dataAvailable == false) {
+		sync.cond.wait(sync.mtx);
+	}
+	
+	if (sync.streamNum == 1) {
+		print_and_clean(l2, sync.t);
+		l1.push_back(sync.t);
+	} else {
+		print_and_clean(l1, sync.t);
+		l2.push_back(sync.t);
+	}
+	
+	sync.dataAvailable = false;
+	sync.mtx.unlock();
+}
+
+void print_and_clean(list<Tuple>& l, Tuple t) {
+}
+	
+	
+	
+
+}
+
+	
+}
+
 
 
 WRITER:

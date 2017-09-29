@@ -106,6 +106,47 @@ def width(nd):
 ######################
 # ITERATIVE          #
 ######################    
+
+
+
+void preorder(Node* nd) {
+	if (!nd)
+		return;
+		
+	stack<Node*> stk;
+	stk.push(nd);
+	
+	while (stk.size()) {
+		Node* top = stk.top;
+		
+		if (!top)
+			return;
+			
+		if (!top->lflag && !top->rflag)
+			cout << top->data;
+			
+		if (top->lflag && top->rflag) {
+			stk.pop();
+			continue;
+		}
+				
+		// Can push nullptr
+		if (!top.lflag) {
+			top->lflag = true;
+			stk.push(top->left);
+			continue;
+		}
+		
+		// Can push nullptr
+		if (!top.rflag) {
+			top->rflag = true;
+			stk.push(top->right);
+			continue;
+		}
+	}
+}
+
+
 def print_preorder_i(nd):
     stk = [nd]
      

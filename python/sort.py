@@ -7,6 +7,8 @@ I have a question for you. I'm exploring the option of finding a good residentia
 Just a thought at the moment but I'm interested in finding out more. One of my friends pointed us to 'Canadian International School' and 
 'Stonehill International School'.  Are you familiar with them? What is  your opinion in general about these international schools.
 I'm debating between the schools here and international schools back in India.
+
+
 #-------------------------
 # SELECTION SORT
 #-------------------------
