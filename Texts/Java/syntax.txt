@@ -1,0 +1,258 @@
+* Java programs are written using Unicode. Even variable names can be 
+unicode. You need a Unicode-enabled text editor. 
+
+* You can embed Unicode characters by using escape \u.
+\u0020 is the space character, and \u03c0 is the character π.
+
+* 7-bit ASCII is used by english and 8-bit ISO Latin-1 is used
+by western european languages.
+
+* Java ignores spaces, tabs, newlines, and other whitespace, except 
+when it appears within quoted characters and string literals. 
+
+* /** */ is a doc comment. javadoc extracts these comments and 
+creates online documentation for your class. You can also use 
+HTML tags for enclosed comments.
+
+* Identifiers may be of any length. They can contain _, $, british pound
+sign and Yen sign. You should avoid using currency symbols because they
+are also used by the generated code.
+
+* isJavaIdentifierStart() and isJavaIdentifierPart() of the class java.lang.Character
+can be used to validate an identifier name.
+
+* Literals are values that appear directly in Java source code.
+Examples: 1 1.0 '1' "one" true false null
+
+PRIMITIVE DATA TYPES":
+boolean --> 1 bit. true/false
+char    --> 16 bits. unsigned. \u0000 to \uFFFF
+
+#Integer Types
+byte    --> 8 bits. signed integer. -128 to 127
+short   --> 16 bits. signed integer
+int     --> 32 bits. signed integer
+long    --> 64 bits. signed integer
+
+float   --> 32 bits
+double  --> 64 bits
+
+
+* Boolean expressions have to be explicit.
+if ( o != null) instead of if (o)
+
+* char values can be converted to and from the various integral types, and 
+the char data type is a 16-bit integral type. Unlike other integral types this
+is usigned.
+
+* The char type represents Unicode characters. It is 16 bit integral type.
+javac accepts identifiers as UTF-8 (a variable-width encoding) in input, 
+but represents chars internally as a fixed-width encoding that is 16 bits wide.
+
+* Character class has several useful methods.
+
+LITERALS
+* When the Java interpreter evaluates a literal expression, the resulting value is the 
+literal itself. When the interpreter evaluates a variable expression, the resulting value 
+is the value stored in the variable.
+
+* Char literals can be represented like 'A' or '\u05D0' - a unicode character.
+Literals like '\t', '\n' are non printable characters. You also escape certain
+punctuation characters that have a special meaning in java.
+
+* Each unicode character has a code point and the standard evolves. Java8 uses Unicode 6.2.
+
+
+STRING LITERALS
+* This is actually a class and not a primitive type.
+Becase they are so commonly used java has string literals.
+
+* Integer literals can be written in decimal, binary, octal and hex.
+0X is for hex. 0b is for binary and underscores can be used. Any interal
+starting with 0 is octal.
+0xff - decimal 255 as hex
+0377 - decimal 255 as octal
+0b0010_1111 - decimal 47 as binary
+
+* Integer literal ending with l or L is 64 bit long instead of 32 bit int.
+
+* Integer arithmetic never produces overflow or underflow. Java also doesn't 
+complain when this happens. The numbers just wrap around. Division/Modulo by
+0 throws ArithmeticException.
+
+* There is a class for each primitive type Byte, Short, Integer and Long.
+
+FLOATS/DOUBLES
+* float is a 32-bit, single-precision floating-point value, and double is a 64-bit, 
+double-precision floating-point value. They also have literals.
+1.23E02 is actually 1.23 * 10^2 or 123.45  --> E or e is the exponent
+1e-3 is 0.001
+
+* Floating-point literals are double values by default. A float value literal has f or F.
+double d = 6.02E23; float f = 6.02e23f;
+
+* Most real numbers cannot be represeted exactly by finite number of bits.
+They are approximations. A float is a 32-bit approximation, which results in 
+at least six significant decimal digits, and a double is a 64-bit approximation, 
+which results in at least 15 significant digits.
+
+* +infinity, -infinity, +zero, -zero and NaN are special values.
+On overflow we get infinity values and underflow results in zero.
+NaN is returned on illegal floating operations like:
+double inf = 1.0/0.0; 
+double neginf = -1.0/0.0; 
+double negzero = -1.0/inf; 
+double NaN = 0.0/0.0;
+
+Adding or subtracting to infinity yields infinity.
+(-ve 0 == +ve 0) returns true
+(NaN == NaN)     returns false
+1/-inf returns -ve 0
+1/-0 returns -ve inf
+
+To check for NaN  use Float.isNaN() and Double.isNan()
+
+* You can convert between integral types and floating types.
+boolean is the only primitive type that cannot be converted to and from another
+primitive type in Java.
+
+* Floating point arithmetic never throws exceptions because of inf and NaN.
+
+* Float and Doulbe are classes.
+
+* Compiler warns on narrowing conversion even if the value fits.
+You can use the cast operator if you know what you are doing.
+int i = 13;
+byte b = (byte);
+i = (int) 13.456; //Truncate to int. No rounding.
+
+* Math.round(), Math.floor() and Math.ceil() perform rounding.
+
+* char acts like an integer. However it is unsigned where as short is signed.
+short s = (short) 0xffff; // -1
+char c = '\uffff';
+int i1 = s; // has -1
+int i2 = c; // has 65535
+
+* SIDE EFFECT
+a = a * 2 --> The value of the expression is the value of a multi‐ plied by 2, 
+but the expression has the side effect of storing that value back into a.
+If the expression is evaluated again, the value will be different.
+
+* MODULO
+Also works for floating point values. 4.3 % 2.1 evaluates to 0.1
+For integers modulo 0 causes ArithmeticException.
+For floats modulo 0 gives NaN as does infinity modulo anything.
+
+* + and += joins strings if either of the operand is a string.
+The operator converts the other to a string. The Java interpreter
+has built-in string conversions for all primitive types. An object 
+is converted to a string by invoking its toString() method.
+
+OPERATORS
+* == for primitves tests whether values are equal. For reference types
+it tests whether the operands refer to the same object or array.
+you cannot test two distinct strings for equality with this operator.
+
+* != is the opposite of ==
+
+* & when used with boolean operands, both the operands are evaluated.
+There is no short cut. Same thing with | operator.
+
+INSTANCE OF
+* "string" instanceof String // returns true
+"" instanceof Object // returns true
+null instanceof String // null is never an instance of anything
+
+LABELED STATEMENT
+rowLoop: for(int ..) {
+	break rowLoop;
+}
+
+* final string greeting = "Hello";
+greeting cannot point to any other string literal.
+Whether final or not you cannot use greeting to update memory where "Hello" lives.
+
+SWITCH
+* Switch expression can  have byte, char, short, int (or their wrappers), enum or String.
+Floats, long and boolean types are not supported. Case expressions should be something
+a compiler can evaluate. No runtime expressions.
+
+FOREACH
+* for (declaration : expression)
+Handles collection of objects. oreach loop doesn’t give you a loop counter or any other 
+way to tell if you’re on the first iteration, the last iteration, or somewhere in between.
+
+
+SYNCHRONIZED
+synchronized ( expression ) { 
+	statements
+}
+expression is an expression that must evaluate to an object or an array. 
+Before executing the statement block, the Java interpreter first obtains 
+an exclusive lock on the object or array specified by expression. 
+It holds the lock until it is fin‐ ished running the block, then releases it.
+
+THROW
+throw expression;
+The expression must evaluate to an exception object. When the Java interpreter 
+executes a throw statement, it immediately stops normal program execution and starts 
+looking for an exception handler that can catch, or handle, the exception. The handler
+code is searched in all parent levels.
+
+try {
+}
+catch (Foo1 e1) {
+}
+catch (Foo2 | Foo3 e2) {
+}
+finally {
+	// This block is always executed even when there is a return in try.
+	// Only when try calls System.exit(), we dont come here.
+	// finally is executed before exception is propogated to parent level.
+}
+
+catch and finally are optional but one of them has to be there.
+
+
+TRY-WITH_RESOURCES
+try (InputStream is = new FileInputStream(""))
+This new form of try takes parameters that are all objects that require cleanup.
+These objects are scoped to this try block, and are then cleaned up automatically 
+no matter how this block is exited.
+
+ASSERT
+Provide capability to verify design assumptions. Not enabled by default.
+Thus, by default, assertions are disabled, and assert statements have no effect. 
+The assertion code remains compiled in the class files, however, so it can always be 
+enabled for diag‐ nostic or debugging purposes. You can enable assertions, either 
+across the board or selectively, with command-line arguments to the Java interpreter.
+If enabled and assert expression evaluates to false, java.lang.AssertionError is thrown.
+
+When assertions are enabled and the first expression evaluates to false, the value of the 
+second expression is taken as an error code or error mes‐ sage and is passed to the 
+AssertionError() constructor. 
+
+assert assertion;
+or
+assert assertion : errorcode;
+
+To enable assertions in all classes except for system classes, use the -ea argument. 
+To enable assertions in system classes, use -esa. To enable assertions within a 
+specific class, use -ea followed by a colon and the classname:
+
+java -ea:com.example.sorters.MergeSort com.example.sorters.Test
+
+METHOD MODIFIERS
+final -> cannot be overridden or hidden by a subclass. Amenable to Compiler Optimization.
+All private methods are also implicitly final.
+
+native -> method implementation is written in some “native” language such as C and is provided 
+externally to the Java pro‐ gram. Like abstract methods, native methods have no body: the curly 
+braces are replaced with a semicolon.
+
+synchronized -> makes a method threadsafe.
+Before a thread can invoke a synchronized method, it must obtain a lock on the method’s class (for static methods) 
+or on the relevant instance of the class (for non-static methods). 
+
+CHECKED AND UNCHECKED EXCEPTIONS

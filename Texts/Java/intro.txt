@@ -1,0 +1,25 @@
+* Language, JVM and Ecosystem
+
+* The JVM is an interpreter for the bytecode form of the program.
+Its steps through one bytecode instruction at a time. 
+Its like a mini computer within a computer which can understand bytcode. 
+Note, both JVM and user code can launch additional threads in the JVM process.
+
+* Languages like Perl/Python interpret the source code direclty. JVM interprets bycode.
+* java <task> <args> actually starts an empty jvm process which starts interpreting
+the byte codes in class file.
+
+* JVM exists for every combination of hardware and OS platform.
+
+* JVM makes use of runtime information to self-manage. This information
+cannot be deduced at compile time. JVM first identifies which parts of the program are 
+called most often—the “hot methods.” Then, the JVM compiles these hot methods directly 
+into machine code—bypassing the JVM interpreter.
+
+* Java's ecosystem consists of thirdparty libraries and components. You can find 
+a connector for almost anything.
+
+* javac produces a class file containing bytecodes. class file is the only way
+to get new code into a running program.
+
+* A class file can be created by non-java languages. Example Scala.

@@ -547,7 +547,7 @@ functions, find_if, and various sorting algorithms.
 Function objects are always copied by value. So, if your function has nested calls,
 remember each nested call will make a copy of the predicate and if predicate has 
 state the change in state is lost after the call to nested function. You can't 
-transfer the new state to next method.
+transfer the new state to(parent) next method.
 
 
 ITEM 40:
@@ -803,6 +803,15 @@ but discarded so the next read won't encounter it.
 istream& istream::read (char* str, streamsize count)
 Reads count characters.
 Doesn't automatically add the null terminating character.
+
+
+std::getline:
+istream& getline (istream& is, string& str, char delim);
+extracts characters from is and pushes back to str until delim is reached.
+delim is discarded so next read doesn't encounter it.
+
+istream& getline (istream& is, string& str);
+extracts characters from is and pushes back to str until '\n' is reached.
 
 
 IGNORE -> read and discard characters

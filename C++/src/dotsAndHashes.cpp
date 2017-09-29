@@ -91,7 +91,7 @@ void get_unvisited_neigbors (
 {
 	static int delta[] = {-1, 0, 1};
 	int maxX = marker.size();
-	int maxY = marker[0].size();
+	int maxY = 3; //marker[0].size();
 
 	for (auto dx : delta) {
 		for (auto dy : delta) {

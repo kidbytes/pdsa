@@ -164,7 +164,6 @@ wait()            -> block until count > 0, then decrement count atomically and 
 ** For condition variable, barrier and latch several threads will be unblocked.
 ** cond.broadcast() unblocks several thread and cond.signal() unblocks only one thread,
 
-
 PRODUCER-CONSUMER
 One or more producers and one or more consumers
 Requests are put in Q by producers and removed by consumers.
@@ -185,8 +184,10 @@ while (true) {
 		cond.wait(mtx);
 	}
 	Request req = que.pop_front();
-	req.process();
 	mtx.unlock();
+	
+	req.process();
+	
 	return;
 }
 	
@@ -208,8 +209,8 @@ write locks are released.
 
 A write lock is mutually exclusive.
 
-A read lock can be converted to write lock in 2 modes: optimitic or pessimistic.
-Optimistic: Conversion is not guaranteed to be atomic. 
+A read lock can be converted to write lock in 2 modes: optimistic or pessimistic.
+Optimistic: Conversion is not gu aranteed to be atomic. 
 Read lock is released and then a write lock is acquired. In the mean time it is
 possible a read or write lock was acquired and the state of the data was changed. 
 So condition has to re-evaluated after a write lock was acquired.
@@ -426,3 +427,93 @@ class AllocateReader {
 
 def write():
 	hMutexWriter.lock()
+	
+	
+	
+	
+READING FROM 2 STREAMS
+
+struct SyncObject {
+	Condition cond;
+	Mutex mtx;
+	bool dataAvailable;
+	Tuple tuple;
+	Mutex readMtx
+}	
+
+void threadFunc(Stream s, SyncObject& sync) {
+
+	while (true) {
+		Token t = s.poll();
+		
+		sync.mtx.lock();
+		sync.dataAvailable = true;
+		cond.signal()
+		sync.mtx.unlock();
+		
+		// Block until the data is read
+		sync.readMtx.lock();
+	}
+}
+
+void main() {
+	Stream s1, s2;
+	SyncObject sync1, sync2;
+	
+	list<Tuple> l1;
+	list<Tuple> l2;
+	
+	Thread t1 = threadFunc(s1, sync1);
+	Thread t2 = threadFunc(s2, sync2);
+	
+	while (true) {
+		sync1.readMtx.lock();
+		sync2.readMtx.lock();
+		
+		//Read from 1st stream
+		sync1.mtx.lock();
+		while (!sync1.dataAvailable) {
+			sync1.cond.wait();
+		}
+		sync1.mtx.unlock();
+		print_and_clean(l1, sync1.tuple);
+		l1.push_back(sync1.tuple);
+		sync1.readMtx.unlock();
+			
+		//Read from 2nd stream
+		sync2.mtx.lock();
+		while (!sync2.dataAvailable) {
+			sync2.cond.wait();
+		}
+		sync2.mtx.unlock();
+		print_and_clean(l2, sync2.tuple);
+		l2.push_back(sync2.tuple);	
+		sync2.readMtx.unlock();
+		
+		
+	}
+	
+	
+	
+	t1.join();
+	t2.join();
+	
+
+}
+
+void print_and_clean( list<Tuple>& lst, const Tuple& t) {
+	if (lst.empty())
+		return;
+		
+	using Iter = list<Tupe>::iterator;
+	Iter iter = lst.begin();
+	while (iter != lst.end()) {
+		if (abs(t.time - iter->time) > 1000) {
+			break;
+		} 
+
+		cout << iter->data << ", " t.data << endl;
+	}
+	
+	lst.erase(lst.begin(), iter);
+}

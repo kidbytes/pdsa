@@ -5,10 +5,11 @@ struct Data {
 	int ts;
 	
 	bool operator < (const Data& rhs) {
-		return this->ts <= rhs.ts; //Strict weak ordering
+		return this->ts < rhs.ts; //Strict weak ordering
 	}
 };
 
+// You can also use pointers instead of iterators but you have to free memory
 unordered_map<int, set<Data>::iterator> dict;
 set<Data> bst;
 const int maxSize = 10;
