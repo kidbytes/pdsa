@@ -256,3 +256,101 @@ Before a thread can invoke a synchronized method, it must obtain a lock on the m
 or on the relevant instance of the class (for non-static methods). 
 
 CHECKED AND UNCHECKED EXCEPTIONS
+Checked exceptions are something you can recover from by catching them.
+It is relaed to an understood and anticipated failure.
+If a method throws a checked exception the method must declare it in its throws clause.
+Otherwise the compiler throws an error - it is checked by the compiler.
+If a method calls some other method which throws a checked exception, the method must
+either handle it or delcare it in its throws clause.
+Checked exceptions descend from Exception class (except RuntimeException subclass)
+
+Java environment throws unchecked exceptions. Unchecked exceptions descend from Error class.
+RuntimeException and its descedents are also unchecked exceptions.
+
+
+VARARGS
+public static int max(int first, int... rest) // 0 or more ints for rest
+There can be only 1 ellipsis and that too last argument.
+
+These methods are handled purely by the compiler. These methods are converted by the
+compiler to 
+public static int max(int first, int[] rest)
+
+The compiler also converts invocation of calls like this:
+max(1, 2, 3) to max(1, new int[] { 2, 3 })
+
+It is legal to send an array for the second argument. The converse is not true.
+If the method is declared with an array argument you can't send an expanded list.
+
+PACKAGES:
+* Named collection of classes, interfaces and other reference types.
+* Defines a namespace for the classes it contains.
+* Packages partition the java namespace.
+* Core classes of Java platform are in java namespace.
+* Extensions standardized by Oracle have javax namespace.
+* Every class has a simple name and a fully qualified name.
+* Without a package statement classes belong to unnamed default package.
+* Without the import statmemt you must use the fully qualified name for a type.
+* Types from java.lang and current package are imported automatically so 
+that you don't have to use fully qualified names for them.
+* import java.util.* // On-demand import
+
+Types are imported as you use them.
+imports types only under util.
+Doesn't recurse to sub packages. So, java.util.zip.foo must be fully
+qualified.
+On-demand import is not the same as explicitly importing every class
+within that package. Instead they are only imported if used.
+
+It is illegal to import these in a single file.
+import java.util.List; //bring immediately into namespace
+import java.awt.List;  //bring immediately into namespace
+
+You should instead use
+import java.util.*; //on-demand
+import java.awt.*;  //on-demand
+import java.util.list;
+
+To use java.awt.list we have to use fully qualified name.
+
+IMPORTING STATIC MEMBERS
+As well as types, you can import the static members of types using the 
+keywords import static.
+
+import static java.lang.System.out;
+Then you can use out.println()
+
+import java.lang.Math.* 
+sqrt(abs(..));
+
+You can also import enums and constants in this way.
+When a name is imported in this way it can be a constant, method, enum, etc.
+The system just looks at the name.
+And if a method is overloaded, you can use any method with that name.
+You can import the same name from two packages as long as the methods
+have different signatures.
+
+JAVA FILE:
+At most one top-level public class. 
+No restriction on number of public nested/inner classes.
+The Java interpreter knows where the class files for the standard system classes 
+are located and can load them as needed. When the interpreter runs a program that 
+wants to use a class named com.davidflanagan.examples.Point, it knows that the code
+for that class is located in a directory named com/david anagan/examples/ and, by 
+default, it “looks” in the current directory for a subdirectory of that name. 
+In order to tell the interpreter to look in locations other than the current directory, 
+you must use the -classpath option when invoking the interpreter or set the CLASS PATH 
+environment variable. 
+
+public static void main(String[] args)
+java -classpath /opt/Jude com.davidflanagan.jude.Jude datafile.jude
+com.davidflanagan.jude.Jude --> Name of the class that contains main()
+/opt/jude --> where to look for the classes needed by the program
+datafile.jude --> argument to main
+
+If a program and its dependent jars (except the platform ones) are packaged in jar,
+a jar file you can run it via
+java -jar /usr/local/Censum/censum.jar
+
+
+

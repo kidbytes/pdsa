@@ -1,0 +1,56 @@
+* All java statments appear within a class, and all methods are implemented within it.
+
+* From java 8, an interface can have a default implmentation for a method.
+
+* Classes and interfaces are the most important of the five fundamental reference 
+types defined by Java. Arrays, enums, and annotations are the other three.
+
+* public class Integer extends Number implements Serializable, Comparable { 
+// class members go here
+
+Declarations may also include abstract and final. A class cannot be both abstract and final.
+
+FIELDS/METHODS
+Instance fields/methods
+Class fields/methods
+
+final -> variable cannot be changed after initialization
+Fields can have initializers.
+privateinta=17,b=37,c=53;
+
+Fields that are both static and final are compile-time constants that javac may inline. 
+
+Transient: 
+This modifier specifies that a field is not part of the persistent state of an object 
+and that it need not be serialized along with the rest of the object.
+volatile:
+
+This modifier indicates that the field has extra semantics for concurrent use by two or 
+more threads. The volatile modifier says that the value of a field must always be read 
+from and flushed to main memory, and that it may not be cached by a thread (in a register 
+or CPU cache). 
+
+CLASS FIELDS
+There is only 1 copy of it.
+public static final double PI = 3.14159; //Class constant
+A public static field is essentially a global variable. Since we use fully qualified names
+there will not be any name collissions.
+
+CLASS METHODS
+A class method cannot use any instance fields or instance methods because class methods are 
+not associated with an instance of the class. 
+
+public static double radiansToDegrees(double rads) { 
+	return rads * 180 / PI;
+}
+
+double d = Circle.radiansToDegrees(2.0);
+
+CONSTRUCTOR CHAINING
+// This is the basic constructor: initialize the radius
+public Circle(double r) { this.r = r; }
+// This constructor uses this() to invoke the constructor above 
+public Circle() { this(1.0); }
+
+Refactor common initializing code and use chaining.
+Important: this() has to be the first line i ctr.
