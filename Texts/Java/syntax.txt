@@ -294,6 +294,8 @@ PACKAGES:
 * Types from java.lang and current package are imported automatically so 
 that you don't have to use fully qualified names for them.
 * import java.util.* // On-demand import
+* Java packages do not “nest,” so javanut6.ch03.different is just a different 
+package than javanut6.ch03; it is not contained inside it or related to it in any way.
 
 Types are imported as you use them.
 imports types only under util.
