@@ -1,0 +1,55 @@
+ Languages that only check type compatibility at runtime are called dynami cally
+ typed—JavaScript is an example of a dynamically typed language. Java is a statically
+ typed language.
+ 
+ INTERFACE
+ A new reference type. Provides only API.
+ An interface can provide default implementation to certain methods. THe is done
+ with the default keyword. Classes can either overrided them or choose not to.
+ All other methods are mandatory. Default methods are new in Java 8.
+ 
+ Any instances of that class are members of both the type defined by the class and 
+ the type defined by the interface. Objects that do not share the same class or superclass 
+ may still be members of the same type by virtue of implementing the same interface.
+ 
+interface Centered {
+	void setCenter(double x, double y);
+	double getCenterX();
+	double getCenterY(); 
+}	
+
+* All are abstract and mandatory by default.
+* All are public.
+* No instance fields. Only static and final allowed.
+* It cannot be instantiated so no constructors.
+* Can contain nested types. The are implicitly public and static.
+* In Java 8, an interface can contain static methods.
+* An interface can extend multiple interfaces.
+interface A extends B, C, D {}
+
+A class that implements such an interface must implement the abstract methods defined directly 
+by the interface, as well as all the abstract methods inher‐ ited from all the superinterfaces.
+A class that doesn't implement all methods must be declared as Abstract.
+
+DEFAULT/OPTIONAL METHODS
+Added to help with providing backward compatability. Say, a new method has to be added to an
+interface. Without default methods, we cannot provide backward compatability for this interface.
+
+interface E {
+	pubic default void sort(..) {
+	}
+}
+
+MARKER INTERFACES
+Empty interfaces. A class implementing this interface wihout having to implement any methods.
+This is done to announce certain properties of the class.
+
+A class implements the Serializable interface to tell ObjectOutputStream that its instances may 
+safely be serialized. java.util.RandomAccess is another example.
+if (a instanceof RandomAccess) { .. }
+
+
+
+
+
+
