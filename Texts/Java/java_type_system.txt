@@ -49,7 +49,114 @@ safely be serialized. java.util.RandomAccess is another example.
 if (a instanceof RandomAccess) { .. }
 
 
+GENERICS
+List shapes = new ArrayList();
+CenteredCircle c = (CentredCircle)shapes.get(0);
+
+Problem here is when retreiving. We need to cast to the right object. Otherwise we will get an exception.
+And nothing prevents from putting different kinds of objects because Object is the parent for all objects.
+
+We want the compiler to detect illegal objects so that we get a compiler error instead of run time error.
+
+List<CenteredCircle> shapes = new ArrayList<CenteredCircle>();
+shapes.add(new CenteredSquare(2.5, 2, 3)); //Causes compiler error
+CenteredCircle c = shapes.get(0);          // No cast needed
 
 
+* Container types are usually called generic types and they are declared like this:
+interface Box<T> { 
+	void box(T t); 
+	T unbox();
+}
+Box<T> is a template and Box<int> is a particular instantiation just like in C++.
+
+interface List<E> extends Collection<E> { 
+	boolean add(E e);
+	E get(int index); // other methods omitted
+}
+We only make basic assumptions about type E.
+
+* List<CenteredCircle> shapes = new ArrayList<>(); // Diamond syntax. No need to repeat type in rhs
+
+TYPE ERASURE
+Generics was added in Java 5. To maintain backward compatability, javac removes the template parameters
+and are not reflected in the bytecode. So, the type system seen by javac is different from the type system
+seen by JVM.
+
+Type erasure leads to one problem:
+int totalOrders(Map<String, List<String>> orders);
+int totalOrders(Map<String, Integer> orders);
+
+Wont compile because .. 
+
+Both the above methods map to 
+int totalOrders(Map);  // in bytecode we have rawtype Map
+
+The runtime type is less specific than the compile-time type, because the type infor‐ mation about
+the payload type is gone—it has been erased, and the resulting run‐ time type is just a raw type.
+
+The compile-time type is less specific than the runtime type, because we don’t know exactly what  
+concrete type l will be—all we know is that it will be of a type compati‐ ble with List.
+
+WILDCARDS
+ArrayList<T> is not instantiable. We need to supply to real type like String to instantiate it.
+That means at compile time we need to know the type and should have been already coded with proper type.
+What if we don't know the type at compile time?
+There is something called unknown type - which is represented as <?>.
+
+ArrayList<?> mysteryList = unknownList();
+Object o = mysteryList.get(0);
+
+ArrayList<?> is a complete type that a variable ca have, unlike ArrayList<T>.
+
+* Even though String is a subclass of Object, List<String> is not a subclass of List<Object>.
+List<Object> objects = new ArrayList<String>(); // is invalid
+Because looking at lhs, we could write object.add(new Object()) which doesn't make sense
+object is a list of strings in reality.
+
+* To have subtyping relationship for containers we need to use the unknown type:
+List<?> objects = new ArrayList<String>();
+This means that List<String> is a subtype of List<?>—although when we use an assignment like 
+the preceding one, we have lost some type information. For exam‐ ple, the return type of get() 
+is now effectively Object. You should also note that List<?> is not a subtype of any List<T>, 
+for any value of T.
+
+BOUNDED WILDCARDS
+They are used to describe the inheritance hierarchy of a mostly unknown type.
+if Cat extends Pet, then List<Cat> is a subtype of List<? extends Pet>
+
+Type covariance
+This means that the container types have the same relationship to each other as the payload 
+types do. This is expressed using the extends keyword.
+
+Type contravariance
+This means that the container types have the inverse relationship to each other as the payload types. 
+This is expressed using the super keyword.
+
+GENERIC METHODS
+A generic method is a method that is able to take instances of any reference type.
+// Note that this class is not generic
+// Emulate comma operator in C
+public class Utils
+	public static <T> T comma(T a, T b) {
+		return a;
+	}
+}
+
+
+ENUMS
+Enums are a variation of classes that have limited functionality and that have only a small number 
+of possible values that the type permits.
+
+All (implicitly) extend java.lang.Enum
+
+public enum PrimaryColor {
+	// The ; is not required at the end of the list of instances 
+	RED, GREEN, BLUE
+}
+Instances of the type PrimaryColor can then be referenced as though they were static fields: 
+PrimaryColor.RED, PrimaryColor.GREEN, and PrimaryColor.BLUE.
+
+enums are specialized classes, enums can have member fields and methods.
 
 
