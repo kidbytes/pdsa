@@ -285,3 +285,142 @@ the number of dimensions don't match
 sequences = s; // This line will not compile
 // s can be converted to Object or Object[], because all array types // (including String[] and String[][]) 
 can be converted to Object. Object[] objects = s;
+
+CLASSE LITERALS:
+class is one of the 5 reference types. 	
+
+Literals: Literal syntax allow values to be placed into the text of the program.
+A String value can be placed literally into the code.
+
+Class object stores metadata for each type. You can include a Class object literally
+like int.class, int[].class,..
+
+null is a reference to nothing. You can use null word literally in your code.
+
+A lambda expression is essentially a function that does not have a name, and can be
+treated as a value in the language. As Java does not allow code to run around on its
+own outside of classes, in Java, this means that a lambda is an anonymous method
+that is defined on some class
+
+The syntax for a lambda expression looks like this:
+( paramlist ) -> { statements }
+One simple, very traditional example:
+Runnable r = () -> System.out.println("Hello World");
+
+When a lambda expression is used as a value it is automatically converted to a new
+object of the correct type for the variable that it is being placed into.
+
+
+ARRAYS
+An array is a special kind of object that holds zero or more primitive values or references.
+The length of an array is specified when the array is created, and it never changes.
+The element type of an array may be any valid Java type, including array types.
+This is how we support array of arrays.
+
+To be compatible with C, brackets can also be place after the variable.
+int[] one vs int one[];
+
+ARRAY TYPE
+Array types are reference types, just as classes are. Instances of arrays are objects,
+just as the instances of a class are.4 Unlike classes, array types do not have to be
+defined. Simply place square brackets after the element type.
+
+The length of an array is not part of the array type. 
+It is not possible, for example, to declare a method that expects an array 
+of exactly four int values, for example.
+
+Array types are not classes, but array instances are objects. This means that arrays
+inherit the methods of java.lang.Object. Arrays implement the Cloneable interface
+and override the clone() method to guarantee that an array can always be
+cloned and that clone() never throws a CloneNotSupportedException. Arrays also
+implement Serializable so that any array can be serialized if its element type can
+be serialized. Finally, all arrays have a public final int field named length that
+specifies the number of elements in the array.
+
+
+If the element type of an array is a reference type T, and T is assignable to a type S, 
+the array type T[] is assignable to the array type S[].
+
+This ability to widen an array type to another array type means that the compiletime
+type of an array is not always the same as its runtime type.
+
+Initialize an array:
+String[] lines = new String[50];
+String[] greetings = new String[] { "Hello", "Hi", "Howdy" }; // Omit length
+
+Actually you can omit the new keyword and just use array literal
+int[] perfectNumbers = {6, 28};
+The compiler does this behind the scene:
+	int[] perfectNumbers = new int[2];
+	perfectNumbers[0] = 6;
+	perfectNumbers[1] = 28;
+
+The array initialization is done at runtime. This means the initializers need not be
+compile time constants.
+Point[] points = { circle1.getCenterPoint(), circle2.getCenterPoint() };
+	
+String resp = askQues(new String[] {"yes", "no"}); // Pass anonymous array
+
+ArrayIndexOutOfBoundsException is thrown when accessing invalid array indices.
+Compared to C/C++ this behavior is more predicatable.
+
+Can you foreach syntax to loop arrays:
+for (int p : primes)
+	sumOfPrimes += p;
+	
+COPYING ARRAY
+int[] data = { 1, 2, 3 };
+int[] copy = (int[]) data.clone();
+
+You need a cast even when the types match.
+This is a shallow copy. Because the copy is shallow, any array can be cloned, even if the
+element type is not itself Cloneable.
+
+Clone creates a new array. If you already have a src and destination arrays you can use
+System.arraycopy() which is super efficient.
+System.arraycopy(a, 1, a, 0, n); // Copy 1 to n --> 0, n in the same array
+
+ARRAY UTILITIES
+java.util.Arrays has static methods to sort, binarySearch, equals, toString, deepEquals, etc
+
+MULTIDIMENSIONAL ARRAYS
+float[360][][], float[360][180][] //Size must be specified from left
+
+Initializing
+boolean response = bilingualQuestion(question, new String[][] {
+{ "Yes", "No" },
+{ "Oui", "Non" }});
+
+
+REFERENCES:
+Primitive types are limited in number. Reference types are user-defined and unlimited.
+References are opaque. They act like pointers but that's it. You can't take address, 
+incremement, etc.
+
+Java uses pass-by-value semantics. A reference(pointer) is also copied when send to a method.
+However, operations on the reference are redirected to the actual object in memory.
+If p is a reference, you can change contents of what p points to but you cannot change contents
+of p itself. The only way to change that is by making it point to something else.
+
+COMPARING
+For references we compare if they point to the same memory location.
+For primitives we compare just the values i.e bits in memory.
+
+String s, t;
+if (s.equals(t)) // Here we are comparing contents
+
+All references inherit equals() method which by default uses == to test for
+identity of references and not equality of content. A class must override equals()
+method to achieve content comparison.
+
+java.util.Arrays.equals() compares content.
+
+BOXING/UNBOXING
+To treat primitives as reference types, use wrapper classes like Boolean, Byte, Integer..
+Integer i = new Integer(1);
+int x = i.intValue();|
+
+Java allows auto boxing and unboxing. You don't need new operator.
+
+Integer i = 0; //boxing
+int j = i;     //unboxing
