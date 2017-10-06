@@ -240,7 +240,10 @@ Same methods as a stl:map with a few more.
 * top():   Access top element
 * push():  Insert element
 * pop():   Remove top element
-                 
+priority_queue<int> first;
+priority_queue<int> second (myints,myints+4);
+priority_queue<int, std::vector<int>, std::greater<int> >
+                            third (myints,myints+4);                 
 
 *** BITSET
 #include <bitset>
