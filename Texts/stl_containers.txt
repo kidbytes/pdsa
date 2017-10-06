@@ -242,6 +242,38 @@ Same methods as a stl:map with a few more.
 * pop():   Remove top element
                  
 
+*** BITSET
+#include <bitset>
+Stores bits with only 2 possible alues: 0 or 1, true or false
+Emulates an array of bool elements but occupies only 1 bit.
+Each position is accessed by position: foo[3] is 4th bit.
+Individual bits are accessed as special reference type bitset::reference.
+Size of bitset is fixed at compile time as a template parameter
+
+count()  : number of bits set
+size()   : number of bits in bitset
+test(n)  : returns value of nth bit (0 or 1)
+any()    : Test if any bit is set
+none()   : Test if no bit is set
+all()    : Test if all bits are set
+set()    : set all bits
+set(pos, bool) : set bit at pos with value bool value
+reset()  : reset all bits to 0
+reset(pos): reset bit at pos to 0
+flip()    : flip all bits
+flip(pos) : flip the bit at pos
+
+to_string() : string representation of the bit pattern
+to_ulong() : long value of the bit representation
+
+std::bitset<4> foo;
+foo.set();
+foo.to_ulong(); //returns 15
+
+Constructors:
+bitset<16> bar(0xfa2);
+bitset<16> baz("0101111001");
+
 
 Proficiency in C++ including STL
 Deep understanding of object-oriented design, data structures and algorithms
