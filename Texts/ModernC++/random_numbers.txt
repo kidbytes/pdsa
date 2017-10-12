@@ -1,0 +1,62 @@
+#include <random>
+
+///////////////////
+* Random Engine: //
+///////////////////
+Stateful generator that generates random values within predefine min and max.
+
+* Standard library provides 16 random engines
+
+* The actual numbers are not purely random - only pseudorandom
+
+* std::default_random_engine eng;
+Generates numbers between eng.min() and eng.max()
+
+* eng()  --> generates one random number
+Can call in a loop. Since the engine has a state, eng() generates a different
+number next time.
+
+* stringstream ss;
+ss << eng;     // Save the current state
+cout << eng()  // Generate random number
+ss >> eng()    // Restore state
+cout << eng()  // Generate random number
+
+In the above code, the same number is generated because we restored the state.
+So, the state completely determines what number is generated.
+
+* Two random engines when created will start with the same initial state. 
+So they generate the same numbers. That is why you need to create a random
+engine with a seed - which is its initial state.
+
+unsigned long seed = chrono::steady_clock::now().time_since_epoch().count();
+default_random_engine e3(seed); //This will generate different numbers compared to eng.
+
+* e.seed()  --> Reset engine to initial state
+e.seed(109) --> Set the initial state to seed 109
+
+if (e1 == e2)  --> true if e1 and e2 have same state. == overloaded
+
+*  shuffle(vec.begin(), vec.end(), default_random_engine())
+
+////////////////////////////////
+* Random Number Distribution: //
+////////////////////////////////
+
+* Generate random numbers within a range. You can use modulus operator but the 
+resulting number is not good quality because the original range is very big and 
+you are just scaling it. Scaling also generates numbers that are uniformly 
+distributed. If you want normal distribution of [1..5] i.e. more numbers around
+2 and 3 then it is not possible.
+
+* uniform_int_distribution<int> distr(0,5); // Range [0,5]
+default_random_engine e(seed);
+cout << distr(e) << endl; // Generates random number between [0,5] with uniform distribution
+e provides source of randomness, distr adjusts to range with given probablity.
+
+* uniform_real_distribution<double> distrR(0,5); // Range [0, 5)
+cout << distrR(e)
+
+* poisson_distribution<int> distrP(1.0) // 1.0 is the mean
+
+* normal_distribution<double> distrN(10.0, 3.0) // mean and std deviation
