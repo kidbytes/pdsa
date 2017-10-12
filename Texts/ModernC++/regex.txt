@@ -1,0 +1,39 @@
+#include <regex>
+
+* regex e("abc", regex_constants::icase); // regex pattern that ignores case
+regex_match("aBC", e); //true
+
+* . --> matches any single character except newline
+  ? --> 0 or 1 preceding character
+  * --> or or more preceding character	
+  + --> 1 or more preceding character
+  ^ --> matches beginning of string
+  $ --> matches end of string
+  
+Examples:
+abc?        --> ab followed by either 0 or 1 c
+ab[cd]*     --> ab followed by 0 or more of either c or d
+ab[^cd]*    --> ab followed by 0 or more of any character other than c or d
+ab[cd]{3}   --> ab followed by exactly 3 characters of either c or d
+              abcdc matches so is abccc
+ab[cd]{3,}  --> same as above but 3 or more occurrences            
+ab[cd]{3,5} --> same as above but either 3 or 4 or 5 of preceding character
+
+(abc)de+\\1 --> \1 is a reference back to 1st group (abc). \ to escape \1
+abcdeeabc matches
+
+(ab)c(de+)\\2\\1
+abcdeedeeabc matches
+
+
+[[:w:]]    --> word character: digit, number or underscore
+This is a predefined character class. A short form.
+
+[[:w:]]+@[[:w:]]+\.com  --> regex for email address.
+
+[[:s:]]     --> white space character
+[[:d:]]     --> decimal digit character
+[[:alpha:]] --> any alphanumeric character
+
+* regex_search(str, e)  --> Searches for a substring that matches
+  regex_match (str, e)  --> The whole string has to match regex
