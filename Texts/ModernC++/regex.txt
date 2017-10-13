@@ -37,3 +37,84 @@ This is a predefined character class. A short form.
 
 * regex_search(str, e)  --> Searches for a substring that matches
   regex_match (str, e)  --> The whole string has to match regex
+  
+* Different types of regular expression grammars. C++ suppports 6 types
+ECMAScript, basic, ..grep, egrep
+
+ECMAScript is the most popular one.
+
+regex e("^abc.+:, regex_constants::grep); // uses grep regular expression
+regex_constants::grep|regex_constants::icase // Flags can be ORed
+
+** SUBMATCH
+Extract a portion of the email address
+
+Define groups using (..)
+([[:w:]]+)@([[:w:]])+\.com
+
+smatch m;  //typedef std::match_results<string>
+           //store details results of matches
+regex e("([[:w:]]+)@([[:w:]])+\.com");  
+bool found = regex_search(str, m, e); //save matching results in m
+for (i=0; i<m.size(); i++)
+	cout << m[i].str();
+	
+boq@gmail.com
+m.size() will be 3
+m[0] --> boq@gmail.com --> entire string
+m[1] --> boq           --> first group
+m[2] --> gmail         --> second group
+m.prefix().str()       --> empty
+m.suffix().str()       --> empty
+
+if input string = <email>boq@gmail.com<end>
+m.prefix().str()       --> <email>
+m.suffix().str()       --> <end>
+
+* m[i].str() is the same as m.str(i) and *(m.begin()+i)
+
+
+** REGEX ITERATORS
+Repeatedly apply regex on the target string. By default regex stops after a match
+has been found. To apply the expression on remaining string you need to use iterators
+
+string str = "a@gmail.com; b@gmail.com ;;c@gmail.com"
+sregex_iterator pos(str.cbegin(), str.cend(), e); //get constant iterators
+sregex_iterator end;
+
+// For each match in the entire string, print
+for (; pos!=end; pos++) {
+	pos->str(0)  --> full email
+	pos->str(1)  --> user name
+	pos->str(2)  --> domain
+}
+
+REGEX TOKEN ITERATOR
+Contains only the complete match. No groupings. Match is applied repeatedly to entire string
+
+regex_token_iterator pos(str.cbegin(), str.cend(), e); //get constant iterators
+sregex_token_iterator end;
+
+// For each match in the entire string, print
+for (; pos!=end; pos++) {
+	pos->str()  --> full email
+}
+
+regex_token_iterator pos(str.cbegin(), str.cend(), e, 0);
+0 means match the entire string
+1 here means extract only the user name
+2 here means extract only the domain name
+-1 means extract all the characters not matched by the regex.
+	In the first loop it prints characters not matched by 1st and 2nd matches.
+	
+	
+* REGEX REPLACE
+regex_replace(str, e, "$1 is on $2");  //$1 and $2 are  interpreted
+Prints something like "boq is on gmail", "boqian is on hotmail", etc
+
+regex_replace(str, e, "$1 is on $2", regex_constants::format_no_copy)
+  //doesn't copy non matching characters to destination
+
+regex_replace(str, e, "$1 is on $2", regex_constants::format_no_copy|regex_constants::format_first_only)
+matches only the first one. The remainig are not matched. Because of format_no_copy they are not even copied
+to the destination.
