@@ -1,0 +1,93 @@
+#include <chrono>
+
+* Precision neutral concept by separating duration and point of time.
+
+DURATION:
+Specific number of ticks over a time unit. Basically a combination of tick count
+and the type of tick.
+42, milliseconds
+1 day
+1.5, a third of a second
+The type of a ticket count is actually represented in terms of seconds.
+duration<int> t(20) //Twenty seconds. seconds by default
+duration<double, ratio<60>> halfMinute(0.5) // Unit is 60s
+duration<long, ratio<1,1000>> milliSec(1) // 1ms. 1/1000th of a sec
+
+d.count(); //Returns ticket count of a duration
+d.rep();   //Returns type of tick
+The library provides several typedefs for convenience.
+chrono::seconds twentySeconds(20);
+chrono::hours, milliseconds, etc
+
+Durations can be added, subtracted, compared, etc
+d1+d2, ++d (increment by 1 tick), d1 % d2, d % val, etc
+The units of duration can be different for arithmetic.
+The result will have a unit that is a gcd of both durations.
+Example: 
+chrono::duration<int,ratio<1,3>> d1(1);   // 1 tick of 1/3 second
+chrono::duration<int,ratio<1,5>> d2(1);   // 1 tick of 1/5 second
+the expression
+d1 + d2
+yields 8 ticks of 1/15 second and
+d1 < d2
+yields false. 
+In both cases, d1 gets expanded to 5 ticks of 1/15 second, and d2 gets expanded to 3 ticks of 1/15 second. 
+So the sum of 3 and 5 is 8, and 5 is not less than 3.
+
+chrono::nanoseconds(myMilliSeconds).count(); //get tick count after conversion
+
+//Helper function to print a duration with details
+template <typename V, typename R>
+ostream& operator << (ostream& s, const chrono::duration<V,R>& d)
+{
+   s << "[" << d.count() << " of " << R::num << "/"
+                                   << R::den << "]";
+   return s;
+}
+
+When converting duration to higher units like from milliseconds to seconds, you may loose precision because
+the divison is not perfect. The conversion will fail but you can force conversion using a cast.
+chrono::duration<double,std::ratio<60>> halfMin(0.5);
+chrono::seconds s1 = halfMin;   // ERROR
+chrono::seconds s2 =
+chrono::duration_cast<std::chrono::seconds>(halfMin);  // OK
+
+TIMEPOINT:
+Combination of Duration and epoch (beginning of time).
+Jan 1, 1970 is an example of an epoch.
+Timepoint is parametrized by a clock, which defines epoch.
+Different clocks have differnet epochs.
+Timepoint is defined as a duration before or after an epoch.
+To find difference between two 2 Timepoints, they need to have the same clocks.
+
+Duration of 10 days with standard epoch represents Jan 11, 1970.
+
+
+CLOCK:
+A clock defines an epoch and a tick period. It can tick in seconds, milliseconds, etc.
+A clock generates timepoints. And from a timepoint we can get epoch and duration.
+Timepoint derives epoch, max/min timepoints from its clock.
+
+clock::duration -> yields duration type
+clock::rep -> yields type of ticks (~ clock::duration::rep)
+clock::time_point -> yields timepoint type of clock
+clock::now() -> yields timepoint for current point in time.
+
+3 CLOCKS:
+system_clock -> can be adjusted
+convenience functions to_time_t() and from_time_t() to interface with C system time time_t.
+
+steady_clock -> can never be adjusted
+Timepoint values never decrease. Advance at a steady rate.
+
+high_resolution_clock -> has shortest tick period possible on current system.
+
+
+
+
+
+
+
+
+
+

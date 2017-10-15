@@ -80,6 +80,10 @@ def convert_bst_to_doubly_linked_list(nd, lastNd):
 # Most visited pages. Log file containing billions of entries of form
 #      timestamp, page
 # Return a list of k most common pages
+# We need to keep a count of hits for each page and have a BST sorted by this count.
+# Since, we need to update the count on the fly we need a hash map with page# -> Page record in BST.  
+
+
 # Hash Table has (timestamp -> pointer to timestamp record in BST)
 # Whenever we need to increment count, find hash entry, reference BST
 # and increment the counter by deleting the entry and inserting it again with new counter.
