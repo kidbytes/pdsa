@@ -1,0 +1,149 @@
+#include <future>
+
+int doSomething(char c) {}
+
+future<int> res1(async(doSomething); //
+or 
+auto res1(async(doSomething);
+
+..
+int r = res1.get(); //Wait for doSomething() to finish
+
+**
+async():
+Tries to start doSomething immediately in a seperate thread.
+Future object is specialized by return type.
+res1.get() actually forces doSomething to launch in case async() didn't start it.
+You can pass any callable object to async like lambdas.
+So, either doSomething() is launched in parallel if possible or called
+sequentially when get() is invoked. 
+
+A call of async() does not guarantee that the passed functionality gets started 
+and finished. If a thread is available, it will start, but if not — maybe your 
+environment does not support multithreading or no more threads are available — the 
+call will be deferred until you explicitly call get() or wait().
+
+
+get(): 
+Immediately retuns if doSomething finished 
+blocks if doSomething is still running
+if async() didn't start doSomething, it would be forced now and block ~synchronous
+if get() is not called, doSomething may never be called.
+
+**
+Maximize the distance between async() and get() so there is more probability async()
+would have launched the method.
+
+** 
+You can force async to start the method immediately using a launch policy.
+auto r = async(launch::async, func1)
+If threads are not available then this calls throws syste_error exception with rcode
+resource_unavailable_try_again.
+
+You don't need to call get() here to block till func1 finishes because the same thing 
+is accomplished when the returned future object goes out of scope.
+
+if you don't assign the result of async() to a future, the called will block until func1
+fiishes. This gives you synchronous behavior.
+
+**
+launch::deferred -> Execution of func1 will be deferred till get() is called.
+With default policy it is unpredictable when func1() would be called. With deferred poliy we
+know it will be called when get() is invoked.
+
+This policy especially allows to program lazy evaluation. For example:4
+auto f1 = std::async( std::launch::deferred, task1 ); 
+auto f2 = std::async( std::launch::deferred, task2 ); 
+...
+
+auto val = thisOrThatIsTheCase() ? f1.get() : f2.get();
+
+**
+future will store return value of func1 and also store any exception thrown by it.
+If an exception is thrown but not caught, the thread will be terminated.
+When get() is called, the exception is rethrown. So, the code calling get() must be
+wrapped in a try/catch block.
+
+**
+get() can only be called once. After that future will be rendered invalid which can be 
+checked only by calling valid(). Any call other than dtr() will result in undefined 
+behavior.
+
+Waiting for the background thread to finish without processing its output:
+wait() -> forces the start of a thread a future represents and waits for its termination.
+          Can be called multiple times.
+          
+wait_for(10s) -> wait atmost 10s for func1. After that you just continue with your main
+                 thread if the thread is still running. You are not processing the output anyway.
+                 Return if the thread finished early. 
+                 
+wait_until(1pm) -> You wait until a specific timepoint or clock time has reached.                 
+                   Return early if thread finishes.
+                                     
+The above api return:                  
+future_status::deferred -> is async deferred operation and no calls to wait() or get() invoked.
+future-status::timeout  -> operation started asynchronously but hasn't finished.
+future_status::ready    -> operation finished.
+
+**
+Speculative Execution:
+int quickComputation(); // process result ‘‘quick and dirty’’ int accurateComputation(); // process result ‘‘accurate but slow’’
+std::future<int> f; // outside declared because lifetime of accurateComputation() // might exceed lifetime of bestResultInTime()
+   
+int bestResultInTime()
+{
+	// define time slot to get the answer:
+	auto tp = std::chrono::system_clock::now() + std::chrono::minutes(1);
+
+	// start both a quick and an accurate computation:
+	f = std::async (std::launch::async, accurateComputation); 
+	int guess = quickComputation();
+
+	// give accurate computation the rest of the time slot:
+    std::future_status s = f.wait_until(tp);
+
+	// return the best computation result we have:
+    if (s == std::future_status::ready) {
+    	return f.get();
+	}
+	else {
+           return guess;
+	} 
+}
+
+Note that the future f can’t be a local object declared inside bestResultInTime() 
+because when the time was too short to finish accurateComputation() the destructor 
+of the future would block until that asynchronous task has finished.                  
+
+**
+Pass a 0 duration or a timepoint that has passed, you can check if a thread is still running.
+while (f.wait_for(chrono::seconds(0) != future_status::ready)) {
+...
+}
+
+Note the loop may never end if no one calls get(). We need to fix the check condition as follows:
+// check whether task was deferred:
+if (f.wait_for(chrono::seconds(0)) != future_status::deferred) {
+	// do something while task has not finished
+	while (f.wait_for(chrono::seconds(0) != future_status::ready)) {
+	...
+	}
+}
+
+Not deferred means the operation has been launched and may be still running or ay have finished.
+
+**
+this_thread::yield() -> hint to reschedule to the next thread
+
+
+**
+async ([=] { func1(c);})
+pass c from parent scope by value.
+
+If you pass by reference there is a risk if variables go out of scope before background task finishes.
+Plus if the main thread also modifies these varibles it leads to a race condition.
+It is better to pass by value.
+
+** 
+SHARED FUTURE
+
