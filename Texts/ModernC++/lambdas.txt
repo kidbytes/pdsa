@@ -1,0 +1,92 @@
+**
+Lambda expressions, also known as closures, lambda functions, function literals, 
+or just lambdas, have their own unique syntax.
+
+GCC: 4.5. You must specify the -std=c++11 option.
+
+A lambda expression is a syntactic shortcut for a functor, so you can use lambda 
+expressions to replace functors.
+
+**
+[ captures ] (parameters) -> returnTypesDeclaration { lambdaStatements; }
+
+[ captures ] --> Lambda Introducer. which outside variables are available 
+within the scope of function.
+
+[] -> means no outside variables can be used in the function.
+
+(parameters) -> Lamdba Declarator. Optional parameter list.
+You can omit it if no parameters.
+
+-> returnTypeDeclaration :  Return type. If you have 0 or 1 return statements
+compilers can usually deduce it. When you have more than 1 return statement standard
+doesn't guarantee automatic deduction. You can also add return type for clarity.
+
+{ lambdaStatements; } -> This is the lambda body. The statements within the lambda body 
+can access the captured variables and the parameters.
+
+**
+auto lambda = []() { cout << "Hello World" << endl; };
+lambda();
+
+No variable capture, no arguments and no return statement.
+[] -> starts the lambda definition.
+
+Equivalent Definitions:
+auto lambda = [] { cout << "Hello World" << endl; };
+auto lambda = [](void) { cout << "Hello World" << endl; };
+auto lambda = [](void) -> void { cout << "Hello World" << endl; };
+
+**
+auto sum = [](int x, int y) { return x + y; };
+Compiler deduces the return type here
+
+Specify return type
+auto sum = [](int x, int y) -> int { return x + y; };
+
+**
+for_each(numbers.begin(), numbers.end(), [] (int y) {cout << y << endl;})
+You don't to have to create a functor and instantiate it.
+
+**
+You can capture variables either by value or reference. Example for capture by value
+ for_each(numbers.begin(), numbers.end(), [divisor] (int y)
+    {
+        if (y % divisor == 0)
+        {
+            cout << y << endl;
+        }
+    });
+    
+** 
+[=]  -> Any referenced variable within lambda is captured by value.
+[a, &b]  -> Capture a by value and b by reference
+[=, &a, &b]  -> Capture everything by value except for a and b which are captured by reference.
+[this] -> Capture this pointer of the enclosing class.
+
+
+**
+PASSING LAMBDA EXPRESSIONS TO FUNCTIONS
+Each time you are creating a lambda expression, its implementation creates a new class under 
+the hood. Thus, each lambda creates a separate class and has a different type.
+
+You use std::function template to overcome the type differences when passing to functions.
+
+void run_within_for_each(std::function<void (int)> func) {}
+
+auto func1 = [] (int y) {}
+auto func1 = [] (int z) {}
+run_within_for_each(func1);
+run_within_for_each(func2);
+
+**
+It is also possible to use std::function to specify the return type for any function.
+std::function<bool(int)> create_function()
+{
+    return [](int x)
+    {
+        return (x < 100);
+    };
+}
+
+    
