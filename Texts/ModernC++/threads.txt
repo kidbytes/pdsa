@@ -1,5 +1,10 @@
 #include <future>
 
+**
+FUTURE
+Process the outcome of a concurrent operation
+
+**
 int doSomething(char c) {}
 
 future<int> res1(async(doSomething); //
