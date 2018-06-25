@@ -1,0 +1,321 @@
+**********
+* PYTHON *
+**********
+
+* Compiled Code:
+   . Code compiled to byte code. If file is imported, the compiled code is
+     saved to .pyc file so that it doesn't have to compile again.
+
+* Namespaces:
+  . Python uses namespaces to keep track of variables.
+
+  . A namespace is a dictionary: variable_name -> value
+
+  . At any point in program, there are several namespaces available.
+    - local  : Function arguments & locally defined variables. Each func has one.
+    - global : Module's vars, functions, classes, imported modules
+       - builtin: Holds built-in functions and exceptions. Global to all modules
+
+  . Searching starts in local, then in global and finally in built-in
+    Otherwise, NameError exception.
+
+  . Python 2, searches in parent's scope if not found in nested scope.
+
+  . def foo(arg):
+        x=1
+        print locals()   -> returns dictionary of name/value pairs.
+    {'arg':7, 'x':1}     -> output
+
+    for k, v in globals().items(): --> items in global namespace
+
+  . 'import module'      -> the module itself is imported. Any variables within
+                            it are not. You have to use module, Ex. sys.argv
+                            The module name identifies the namespace
+    'from module import' -> the symbol is imported into module namespace.
+                            You access them directly. They loose their namespace
+* Packages:
+    . A file defines a module. It can contain serveral classes.
+    . A package defines a collection of files. Put all the python files in, say
+      directory 'foo'. To make this directory package, create __init__.py file.
+      It may be empty. To import the modules, you can use 'import foo.file'.
+    . The directory 'foo' has to be in Python search path.
+        setenv PYTHONPATH /u/v:/aa/bb/cc   -> can enter several dirs
+    . sys.path within your progam gives you the PYTHONPATH.
+
+* Locals/Globals:
+  . locals() actually returns a copy of local namespace.
+    locals()["x"] = 2 doesn't change the value of variable x locally
+    globals() returns the actual namespace. globals()["x"] = 2 actually
+    changes the value of global variable x.
+
+   . A local var shadows a global var. To override this behavior use 'global x'
+     A var cannot be referenced before it is assigned. When you use 'global x',
+     it should have already been defined in the module above its usage.
+
+* Variables are all references.
+    . y = x[:]            -> makes a copy of the list
+    . Numbers are immutable. If you change the value in function, it doesn't
+      change in the parent level.
+    . Function name are variables too. They are mutable.
+
+* When running a module (as opposed to importing it from another module),
+  the built-in __name__ attribute is a special value, __main__
+                if __name__ == "__main__":
+    . The top level program is known to the interpreter as __main__ and the
+      module currently being run is reference by __name__.
+    . Code executed within the module as part of import has
+      __name__ = 'module_name'
+
+* Statements:
+  . break
+  . continue
+  . pass - do nothing
+
+* Continuing a line
+    x = y + \
+           z
+
+* 0x for hex and ** for exponentiation
+
+* if can be paired with 'else if' or 'elif'
+
+* Boolean: and, or, not
+  . True and False are constants.
+  . None is treated as False
+
+* Python interpreter will execute everything in order, starting at the top.
+  . Free standing code in imported modules are also executed.
+  . Code in function definitions are not executed.
+
+* Cmdline arguments:
+    . sys.argv is the list of cmdline args. len(sys.argv) is argc
+    . sys.argv[0] - script name. The module sys needs to be imported
+    . As in C++, cmdline arguments are strings. Convert using int(), float()
+
+* eval:
+    . Evaluates a passed string as a python expr and returns the result.
+      So, the user can input an expr as an arg to the code and code runs it.
+
+* Variables:
+    . Variables are not declared. It is created when the first assignment is
+      executed.
+    . An unassigned variable has the value None.
+    . Variables don't have types and interpreter doesn't keep track of them.
+      But their values have types. That means, a var can be bound to values of
+      different types.
+    . Python distinguishes between numbers and their string representations.
+      2 + eval('1.5') or 2 + int('32')
+
+* Sequences:
+    . Built-in len() function to give the number of elements.
+    . Slicing lets you extract subsequences
+    . + is for concatenation. * is for replication.
+
+* Zip:
+    . x = [1, 2, 3]
+      y = [4, 5, 6]
+      z = zip(x, y)   -> [(1, 4), (2, 5), (3, 6)] - returns a list of tuples
+    . You can actually create a dictionary out of this
+      d = dict(z)
+
+* Lists:
+    . Elements can be mixed types
+    . x = [1,2,3]
+    . x.append(-2)   -> appends to the list
+    . del x[2]       -> removes element at index 2 i.e 3rd element
+    . x[1:3]         -> subsequence with indices: 1,2. Half open interval
+    . x[2:]          -> all elements starting at index 2
+    . x[:3]          -> all elements upto but not including index 3
+    . x[-1]          -> last item or 1 item from the end
+    . x.insert(2,28) -> insert 28 at index 2. Previous item moves right. Can't move
+                        move left anyway. Then the index of 28 would be different.
+    . 28 in x        -> Tests for membership. 1 for true and 0 for false
+    . x.index(28)    -> returns the index of item
+    . x.remove(200)  -> removes by value. del() removes by index.
+    . w=x+[1, "ha"]  -> Concatenate 2 lists
+    . q = 2 * [1,2]  -> [1,2,1,2]
+    . x = [1,2,3]
+      x.extend([4,5] -> [1,2,3,4,5]
+      x.append([4,5])-> [1,2,3,[4,5]]
+    . x.pop(0)       -> deletes and returns 0th element
+    . x.pop()        -> deletes and returns last element
+    . t.reverse()    -> reverse the list
+    . x.append(obj), x.pop()  -> list as stack
+    . x.append(obj), x.pop(0) -> list as queue
+    . collections.deque -> collections framework
+    . L.index(value) -> index of first match. ValueError exception if not found
+      try:
+        i = L.index(value)
+      except ValueError:
+        pass
+    . L.count(value)  -> count matching items. Use 'in' for efficiency
+    . L.sort()        -> sorts list in place
+    . out = sorted(L) -> get a sorted copy
+    . out = sorted(L, comp) -> use custom 'comp' method when sorting
+
+* Tuples:
+    . Immutable lists
+    . (1,2,'abc')
+    . (,) is an empty tuple
+    . x.pop() is illegal
+    . zip([1,2],[’a’,’b’],[168,168]) -> [(1, ’a’, 168), (2, ’b’, 168)]
+
+* Strings:
+    . Tuples of character elements. Quoted instead of parentheses
+    . x[2] = 'a' is illegal because strings are immutable
+    . x.index('d') or x.index('de')  -> index of char or substring. index() is overloaded
+    . x.rindex('d')                  -> search backwards. Last index
+    . x = x[0:2] + ’q’ + x[3:5]      -> 0,1,'q',3,4  are indexes of new chars
+    . ’---’.join([’abc’,’de’,’xyz’]) -> ’abc---de---xyz’
+    . q = ’\n’.join((’abc’,’de’,’xyz’))
+    . x.upper() or 'abc'.upper()
+    . ’abc de f’.replace(’ ’,’+’)  -> ’abc+de+f’
+    . x.find('c1')            -> Index of first occurence of c1
+    . print r'\nabc'          -> prints \nabc without interpreting escape chars
+    . s = u'Hello, world'            -> stores internally as 16-bit unicode
+    . s.decode(encoding='UTF-16')    -> decodes the string using 16-bit unicode
+    . x.encode(encoding='UTF-16')    -> encodes the string using 16-bit unicode
+    . ['a' 'b' 'c'].split(' ', 1)    -> returns ['a', 'bc']. Splits only once
+    . ['a' 'b' 'c'].split()          -> splits by space and finds all splits
+
+* Printing:
+    . print "the factors of 15 are %d and %d" % (3,5)
+    . %r is used to print if you do not know the type
+
+* Sorting:
+    . x = [[1,4],[5,2]]
+    . x.sort()                    -> [[1,4],[5,2]]
+    . def g(u, v):
+        return u[1] - v[1]      -> Compare by second element
+      x.sort(g)                    -> [[5,2], [1,4]]
+      The sort function return 0 if equal, +ve if a>b and -ve if a<b
+
+* Operator < :
+    . Can be used on sequences. Comparison happens in order.
+      For dictionaries, keys are compared in order
+    . def __cmp__(self, other) -> for comparing classes
+
+
+* Dictionaries:
+    . Associative arrays
+    . keys must be immutable. Ex can't use lists for keys
+    . x = {’abc’:12,’sailing’:’away’}
+    . Can use array notation - x['abc']
+    . x.has_key(key)    -> returns true if key exists
+    . x.get(key, default=None) -> return value for key or return given default
+    . y = x.keys()        -> ['abc', 'sailing']
+    . z = x.values()    -> [12, ’away’]
+    . k, v = x.items()  -> returns both key and value in iteration
+    . x['uv'] = 2       -> inserts a new pair
+    . key can be anything, like file handles
+    . x.pop('abc')      -> deletes pair ('abc':12)
+    . 'uv' in x         -> returns True if 'uv' exiss as a key
+    . x.clear()         -> remove all entries
+    . del x             -> deletes x completely and you can't refer to it
+
+
+* range():
+    . range(stop)      -> generate integers from 0 to (stop-1)
+    . range(start, stop, step)
+      range(4,10,2)   -> (4,6,8). Doesn't generate 10
+      range(0,-10,-2) -> (0,-2,-4,-6,-8)
+
+* Iterating:
+    . for s in [1,2,3]    -> s will take value of each element
+    . for i in range(5)   -> range() produces 0,1,2,3,4 and i takes each value
+    . for index, item in enumerate(L) -> get both the index and item
+    . i=iter(L); i.next()  -> uses iterator
+    . for i in range(len(s)) -> Use s[i] to refer to each element
+    . for-in statement doesn't work correctly, if list is modified in loop.
+      You can use a copy: for o in L[:] del L[index]
+    . for k, v in dict.items() -> Iterating a dictionary
+
+* Functions:
+    . function names can refer to different implementations
+      def square(x), def cube(y)
+      square = cube     -> calling square() now is like calling cube()
+
+* Classes:
+    . class textfile:
+        ntfiles = 0
+        def __init__(self, fname):
+          pass
+
+    . a = textfile('x')  -> create an object of textfile
+    . __init__ is built-in method in any class and is typically overidden
+    . self is not a keyword and you can use any name here.
+    . __del()__() is the destructor called at garbage collection
+    . ntfiles is class variable. You can use it directly in free standing code
+      within the class. Every where else, including instance methods you use
+      textfile.ntfiles to refer to it.
+    . static variables are part of free standing code within the class.
+      They are executed when the module is imported, so ntfiles is 0 when
+      imported, even before any class is instantiated.
+    .@staticmethod decorator is used to define a static method.
+     @staticmethod
+     def totfiles():   --> no self
+       pass
+    . A variable named with underscore wont be imported into namespace when
+      'from pkg import var' is used. You can still use pkg.var to refer to
+      it though.
+
+
+* Derived Classes:
+    . class b(a):
+        def __init__(self, foo):
+            self.foo = foo
+            a.__init__(self)  --> call base class ctr
+
+* Exceptions:
+    . Python built-in functions throw exceptions
+      try:
+        f = open(sys.argv[1]
+      except:
+        print 'err'
+
+    . You can also use this in the normal context
+      # Return 1st index of n. If not found, then append
+      def where1(x,n):
+        try:
+            return x.index(n)
+        except:
+            x.append(n)
+            return len(x) - 1
+
+* I/O:
+    . name = raw_input('enter:')  -> reads the user input and stores in name.
+      User is prompted with 'enter a name:'
+    . str = input("Enter: ") -> assumes input is valid python expr.Evaluates it
+    . z = sys.stdin.readlines()  -> ctrl-d to close the stdin file
+    . f = open('x') -> open in read mode
+    . f.name        -> name of the file opened
+    . f.readlines() -> ['a\n', 'b\n', 'c\n']
+    . f.seek(0)     -> go to byte 0 i.e. beginning of file
+    . f.seek(2)     -> 0,1,2 i.e. go to third byte
+    . f.readlines() -> ['b\n', 'c\n']
+    . f.seek(0), f.read() -> 'a\nb\nc\n'
+    . f.read(3)     -> read only 3 bytes
+    . for l in f:
+        print ’line %d:’ % i,l[:-1] -> strip off last char i.e. \n
+        i += 1                      -> -1 is the index of last item in a list
+
+* File I/O
+    . file fh = open(file_name, "r+")
+    . Can call fh.name, fh.close() etch
+    . fh.write("Python is a great language\n. Lets use it\n")
+    . fh.read([count]) -> Reads count chars. If missing, will read entire file
+    . fh.tell() -> tells the current index/offset in file. This is where the
+                   next read or write will happen. Indexing starts at 0.
+                   If I read 3 chars, f.tell() would return 3 because that's
+                   the index or offset of 4th char.
+    . fh.seek(offset, from) -> Move file pointer.
+                               from: 1=>current position, 0=>start, 2=>end
+    . fh.readline()   -> reads a single line. Leaves \n as-is. readdline()
+                         stops at \n or EOF whichever comes first. So, last
+                         line may not have it. Blank line is represented by \n.
+                         Empty string means EOF.
+
+
+
+
+

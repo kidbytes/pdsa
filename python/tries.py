@@ -20,12 +20,19 @@ from distutils.sysconfig import PREFIX
 # R-Way Tries
 # There are R possible characters/symbols
 # Each node has R children (i.e. R links. One for each possible character)
+# Every node has a unique path to it.
 # Most of the links are null usually.
 # Each node has a path to it. The path identifies the preceding character of the node.
 # The root node has no path, so the preceding character is ""
 # Cumulative path from root to a node gives a prefix where the node is the last character.
 # A node can also have a value if the path represents a key. If it is null then it is just
 # an incomplete key.
+
+# Does each node know what character it represents?
+#   Not really. The index of the link can be used to deduce that
+# Does each node know what substring leads to it?
+# Is it necessary?
+
 # [key] -> [value]    
 # ex. she->0
 #     shell->4 
@@ -103,7 +110,7 @@ void print_keys(Node* nd, const string& prefix)  //Initial prefix is ""
     for(int i=0 ; i < nd->links.size(); i++) 
     {
         if (nd->links[i])
-            print_keys(nd, prefix + itoa('a' + i))
+            print_keys(nd->links[i], prefix + itoa('a' + i))
     }
 }
 def print_keys(nd, que):

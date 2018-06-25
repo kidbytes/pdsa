@@ -82,7 +82,9 @@ def convert_bst_to_doubly_linked_list(nd, lastNd):
 # Return a list of k most common pages
 # We need to keep a count of hits for each page and have a BST sorted by this count.
 # Since, we need to update the count on the fly we need a hash map with page# -> Page record in BST.  
-
+# PageNum -> Count
+# Page Numbers have to be in a BST or Heap
+# PageNum -> pointer in BST or heap
 
 # Hash Table has (timestamp -> pointer to timestamp record in BST)
 # Whenever we need to increment count, find hash entry, reference BST
@@ -120,7 +122,7 @@ def DFS(nd):
             next
             
         if not nei.visited:
-            nei.visited = True
+            nei.visited = True #redundant
             count += 1
             DFS(nei)
             
@@ -133,7 +135,7 @@ def Erase(nd):
 
     for nei in nd.neighbors:
         if nei.color == 'black':
-            nei.color = white
+            nei.color = white #redundant
             Erase(nei)
         
 
@@ -209,6 +211,27 @@ if (input & mask):
 10101010 
 10101001
 10101000
+
+Divisible by 4 means multiple of 4
+4, 8, 12, 16, 20
+
+16
+^
+X8421
+=====
+00100
+01000
+01100
+10000
+10100
+11000
+11100
+100000
+100100
+101000
+110000
+110100
+
 
 (mask & x) (x & (x-1))
 32    

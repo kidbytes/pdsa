@@ -73,6 +73,30 @@ def first_larger_than_k(items, k):
             
     return first    
 
+'''
+1 2
+    3
+5 4
+
+12345 * L  (1 3 5)
+23451 * R  (2 4 1)
+34512
+45123
+51234 * L  (5 2 4)
+
+if (mid > mid+1):
+    return mid+1
+
+else if (mid == mid+1):
+
+else (mid < mid+1)
+
+
+
+
+'''
+
+34512
 # Finds index of smallest element in a circular sorted list
 def find_pivot_in_circular(items):
     r = len(items) - 1;

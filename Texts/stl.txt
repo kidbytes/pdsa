@@ -127,7 +127,7 @@ loop in it and performs by copying items. Member functions mostly are optimized.
                       void container::erase(...) for assoc containers
                       - Apparently there is a performance penalty if iter has to
                         be returned for assoc containers.
- * Range Assignment   void container::assign(InputIterator begin, end) 
+* Range Assignment   void container::assign(InputIterator begin, end) 
  
  ITEM 7:
  * Clean up new'd pointers in a container before the container is destroyed.
@@ -483,7 +483,7 @@ Remove
 remove doesn't receive the container, only iterators. And there is no way
 go get container from iterator. Because there is no container, remove cannot
 delete elements from it. We do not know which member function to invoke. If you
-print the size after remove, the size doen't change. Removes basically moves all
+print the size after remove, the size doesn't change. Remove basically moves all
 unremoved elements to the top of the container. It returns an iterator that points
 to one past the last unremoved element. We can't make any assumptions of the values
 beyond new end(). They need not be removed elements. Remove operates by compacting.

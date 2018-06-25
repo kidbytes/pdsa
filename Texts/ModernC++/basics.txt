@@ -288,7 +288,7 @@ Color c = Color::white;
 auto c = Color::white;
 
 Old enums have to be declared in header file. They have
-to defined with values. There is no seperate declaration and then defintion.                                                         
+to be defined with values. There is no seperate declaration and then defintion.                                                         
 So, if you add a new enum, recompiles the whole code.
 
 enum class Status;                   // forward declaration of new type
@@ -344,8 +344,8 @@ destructors).
 • The return types and exception specifications of the base and derived functions
 must be compatible.
 
-if base class and derived class has the same method but due to some mismatch in,
-signature derived class version overrides instead of overloading, then calling the derived
+if base class and derived class has the same method but due to some mismatch in
+signature, derived class version overrides instead of overloading. Then calling the derived
 class function using base pointer will invoke the base class version.
 
 Small mistakes will lead to overloading a function and not overriding.

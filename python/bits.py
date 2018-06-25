@@ -25,7 +25,7 @@ For signed numbers, the right shift operator is implementation defined.
 to multiplying by power of 2. When you shift more than that can fit, you get all 0's.
 
 * Right shift is equivalent to intger division by 2. Right shift 5 by 1 bit gives 2.
-Whether the padding to left is 0 or not is implementation defined.
+Whether the padding to left is 0 or 1 is implementation defined.
 
 * Shifting by 0 bits will give the same number.
 
@@ -49,9 +49,9 @@ x & (x - 1)   --> Turn off right most 1 bit
 x & (x + 1)   --> Turn on right most 0 bit 
 ~x & (x+1)    --> Isolate the right most 0 bit
 x & (-x)      --> Isolate the right most 1 bit
-x & ~(x-1)    --> Same
+x & ~(x-1)    --> Same or x & (~x+1)
 
-Actually -x is the same as ~(x-1) in 2s complement
+Actually -x is the same as ~x+1 in 2s complement
 -x is also equal to (numSymbols - x). If you have 4 digits, then numSymbols = 16.
 The symbols are from 0 - 15.
 -3 = (16-3) = 13 = 1101    
@@ -66,6 +66,17 @@ The symbols are from 0 - 15.
 0110  6    15 1111
 0111  7     
 1000  8
+
+8421
+0110 -> 6   --- x
+0101 -> 5   --- x-1
+
+0100 -> 6 & 5  (x & x-1)
+
+largest power of 2 less than the or equal to number
+1010 - 1000
+
+
 '''
 
 # Returns the number of bits set for a given number
@@ -127,7 +138,7 @@ def string_to_int(x):
     else:
         return y
 
-# Returns the power set for a given set
+# xsaZXsazss the power set for a given set
 # Exmple:
 #   for 3 elems, iterate from 1 to 7
 #   treat each number as a bit array

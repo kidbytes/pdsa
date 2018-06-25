@@ -178,9 +178,24 @@ def print_inorder_i(nd):
                 curr.lflag = True 
                 stk.append(curr)
                 curr = curr.left
-    
-    
-    
+
+#Inorder_i 2nd version
+while (len(stk))
+    curr = stk.top()
+    if (curr is None):
+        continue
+
+    if (curr.lflag):
+        print curr
+        stk.push(stk.right)
+    else:
+        curr.lflag = True
+        stk.pusn(curr)
+        stk.push(curr.left)
+
+
+
+
 def print_postorder_i(nd):
     stk = [nd]
     

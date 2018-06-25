@@ -1,13 +1,4 @@
 import util
-Hi Ram,
-How is every one? Couldn't catch up with you last year. This time I will make sure we will come to Bangalore.
-
-I have a question for you. I'm exploring the option of finding a good residential school in Bangalore for Arnav. Currently he is in 7th grade.
-
-Just a thought at the moment but I'm interested in finding out more. One of my friends pointed us to 'Canadian International School' and 
-'Stonehill International School'.  Are you familiar with them? What is  your opinion in general about these international schools.
-I'm debating between the schools here and international schools back in India.
-
 
 #-------------------------
 # SELECTION SORT
@@ -129,6 +120,7 @@ def merge_sort(inOutList, start, end):
     merge(inOutList, start, mid, end)                          
         
         
+# Merge sets of 2. Then sets of 4, .. till you merge sets of N/2.
 def bottomup_merge_sort(inOutList):      
     l = len(inOutList)
     stride = 2
@@ -219,9 +211,9 @@ def test_nth_largest(inOutList):
 # [start,lt) has items < pivot
 # [lt,i) has pivots
 # (gt,end] has items > pivot
-#  -----------------------------
-#  < V  |  =V   |        | >V   |
-#  -----------------------------
+#  -------------------------------
+#  < V  |  =V  |          | >V   |
+#  -------------------------------
 #       ^       ^        ^
 #      lt       i        gt
 #

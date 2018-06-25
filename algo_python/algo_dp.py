@@ -41,12 +41,21 @@
 # To identify smaller subproblems:
 #    The final solution can be in one of the 3 forms:
 
-#      _          y[n]       y[n] 
+#      _          x[n]       y[n] 
 #
 # You need to find minimum of  edit(x[m], y[n-1]), edit(x[m-1], y[n]) and 
 # diff(m,n) + edit(x[m-1], y[n-1])
 # To cache solution e(i,j) for x[i] and  y[j] we need a 2-D array
 # e(i-1,j), e(i,j-1) and e(i-1,j-1) should be computed before e(i,j)
+# e(1,1) = max (e(0,1), e(1,0), e(0,0)+D)
+#   0 1 2 3 4 5
+# 0 0 1 2 3 4 5
+# 1 1 1
+# 2 2
+# 3 3
+# 4 4
+# 5 5
+
 # We can go in increasing row order or increasing column order. 
 # The first row and column should correspond to empty strings.
 
@@ -280,3 +289,43 @@ knapsack_with_repetition(weights, values, capacity)
 #             
 # 
 #     return (maxSum, maxStart, maxEnd)
+
+
+Coin Denominations: 1, 3, 5
+Target : 24 using least coins
+
+    0 1 2 3 4 5 6 7 8 9 10    --> Targets
+1   0 1 2 3 4 5 6 7 8 9 10    --> Max Coins for each target using only 1
+3   0 1 2 1 2 3 2 3 4 3 4     --> Max Coins for each target using only 1 and 3
+5   0 1 2 1 2 1 2 3 2 3 2     --> Max Coins for each target using 1, 3 and 5 (all coins)
+
+
+
+T(2) with 1 and 3
+T(1) with 1 and 3, T(-1)
+
+
+T(3) with 1 and 3
+T(2) with 1 and 3, T(0) with 1 and 3
+2, 0  + 1 = 1
+
+
+T(4) with 1 and 3
+
+i.e T(3) and T(1)  + 1 = 2
+
+Either T = coin for find min (T-1, T-3, T-5) + 1
+T(5) = max(T(4), T(2) , T(0)) with denoms 1, 3 and 5
+
+t(5) with 1 and 3 = min(t(4), t(2),  t(0) = 4, 2, 0 = 0 => 0+1 = 1
+
+
+T=2 with 1 and 2
+
+min (2-1, 2-2, 2-3) + 1
+min(1, 0, -1) --> targets
+
+
+DO YOU NEED A 2D?
+0 1 2 3 4 5 6 7 8 9 0
+0 1 2 1 2 1 2 
