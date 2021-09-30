@@ -1,4 +1,4 @@
- Languages that only check type compatibility at runtime are called dynami cally
+ Languages that only check type compatibility at runtime are called dynamically
  typed—JavaScript is an example of a dynamically typed language. Java is a statically
  typed language.
  
