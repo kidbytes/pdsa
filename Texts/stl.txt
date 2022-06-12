@@ -944,6 +944,29 @@ istream and ostream iterators are wrappers where certain operators are overloade
 easily read and write instead of using stream api. They are also work seamlessly with algorithms like copy.
 
 
+Various ways of reading files
+==============================
+std::ifstream in("file.txt");
+std::string contents((std::istreambuf_iterator<char>(in)), 
+    std::istreambuf_iterator<char>());
+
+std::ifstream in("file.txt");
+std::vector<char> contents((std::istreambuf_iterator<char>(in)),
+    std::istreambuf_iterator<char>());
+
+std::ifstream in("file.txt");
+std::stringstream buffer;
+buffer << in.rdbuf();
+std::string contents(buffer.str());
+
+Splitting a string using getline()
+==================================
+stringstream stream(s);
+std::vector<std::string> vec_res;
+string tok;
+while (getline(stream, tok, '|')) {
+    vec_res.push_back(tok);
+}
 
 ######################
 # RECURSIVE          #

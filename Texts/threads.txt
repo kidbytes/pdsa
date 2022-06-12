@@ -191,11 +191,33 @@ while (true) {
 	return;
 }
 	
+// Semaphore Version - Producer thread
+for (int i=0; i < 100; i++) {
+	Request req(i);
+	mtx.lock();
+	que.push_back(req);
+	mtx.unlock();
+	semaphore.post();
+}
+
+// Consumer thread
+while (true) {
+	semaphore.wait();
+	mtx.lock();
+	Request req = que.pop_front();
+	mtx.unlock();	
+	req.process();
+	
+	return;
+}
+
 // Main thread
 main() {
 	producerThread.join();
 	consumerThread.join();	
 }
+
+
 
 READER WRITER LOCK:
 Generally used for resources which are frequently read and less frequently updated.
@@ -517,3 +539,91 @@ void print_and_clean( list<Tuple>& lst, const Tuple& t) {
 	
 	lst.erase(lst.begin(), iter);
 }
+
+
+
+
+Producer/Consumer
+
+- Single Producer and Multiple consumers
+- When a message is consumed, it is removed from the que.
+- There can be any number of consumers and some of them could be idle. 
+  All that matters for the producer is if the que is empty or not.
+
+void consume() {
+	mutex.lock();
+	while (que.empty()) {
+		cond.wait(&mutex);
+	}
+
+	que.pop_back();
+	muntex.unlock();
+}
+
+void produce() {
+	mutex.lock();
+	que.push_back(item);
+	cond.signal();
+	mutex.unlock();
+}
+
+
+
+// Barrier won't work because all the threads including Writers will be awake.
+// Once all the readers read we want only the Writer to wake up.
+list<int> data;
+Barrier bar(NUM_READERS + 1); //1 for the writer
+Mutex mtx;
+
+void produce() {
+	bar.wait()
+	mtx.lock();
+	data.push_back(DATA);
+	mtx.unlock();
+}
+
+void consume() {
+	while (true) {
+		mtx.lock();
+		data.pop_front();
+		mtx.unlock();
+		bar.wait();
+	}
+}
+
+We need a reader count.
+
+void produce() {
+	cond_mutex.lock()
+	while(consumers_read_count < MAX_READERS)
+		condition.wait(&cond_mutex)
+
+	cond_mutex.lock();
+	produce_data();
+	consumers_read_count = 0;
+	cond_mutex.unlock();
+}
+
+void consume() {
+	cond_mutex.lock()
+	consumers_read_count++;
+	consume_data();
+	cond_mutex.unlock()
+
+}
+
+
+void consume() {
+	mtx.lock();
+	reader_count++;
+	if reader_count == 1 //1st Reader
+		writer_mtx.lock();
+	else if reader_count == MAX_READERS //Last Reader
+		writer_mtx.unlock();
+
+	data.pop_front();
+	mtx.unlock();
+}
+
+
+Reader/Writer
